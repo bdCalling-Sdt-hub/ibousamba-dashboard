@@ -65,7 +65,9 @@ function Inquiry() {
           />
         </div>
         {/* Passing details as a prop */}
-        <InquiryTable inquiries={details} />
+        <div className="custom-table">
+          <InquiryTable inquiries={details} />
+        </div>
       </div>
     </ConfigProvider>
   );

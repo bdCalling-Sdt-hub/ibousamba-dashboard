@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input, ConfigProvider } from "antd";
+import { Button, Checkbox, Form, Input, ConfigProvider, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import FormItem from "../../components/common/FormItem";
@@ -22,6 +22,7 @@ const Login = () => {
       navigate("/");
     } catch (err) {
       console.error("Login Failed:", err);
+      message.error(err);
     }
   };
 
