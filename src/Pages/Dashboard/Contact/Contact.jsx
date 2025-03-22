@@ -79,7 +79,14 @@ const Contact = () => {
         }}
       >
         <div className="px-3">
-          <Table columns={columns} dataSource={inquiries} rowKey="_id" />
+          <div>
+            <p className="text-samba text-base font-semibold mb-2">
+              Get In Touch List:
+            </p>
+          </div>
+          <div className="custom-table">
+            <Table columns={columns} dataSource={inquiries} rowKey="_id" />
+          </div>
         </div>
       </ConfigProvider>
 
