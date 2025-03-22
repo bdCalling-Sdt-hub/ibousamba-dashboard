@@ -3,9 +3,9 @@ import { api } from "../api/baseApi";
 const policySlice = api.injectEndpoints({
   endpoints: (builder) => ({
     updatePolicy: builder.mutation({
-      query: ({ data, policy }) => {
+      query: (data, policy) => {
         return {
-          url: `/setting?title=${policy}`,
+          url: `/setting?title=${policy}}`,
           method: "PATCH",
           body: data,
         };

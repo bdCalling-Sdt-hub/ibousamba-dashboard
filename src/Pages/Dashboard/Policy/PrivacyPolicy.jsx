@@ -35,16 +35,15 @@ function PrivacyPolicy() {
       return;
     }
 
-    try {
-      // Fixed: Sending the policy name as a separate parameter
-      const policyName = "privacyPolicy";
-      const result = await updatePolicy({
-        data: { content },
-        policy: policyName,
-      }).unwrap();
+    console.log(content);
 
+    try {
+      const result = await updatePolicy({
+        privacyPolicy: content,
+        policy: "privacyPolicy",
+      }).unwrap();
+      console.log(result);
       message.success("Privacy policy updated successfully!");
-      console.log("Updated policy response:", result);
     } catch (err) {
       message.error(
         err?.data?.message ||
