@@ -1,32 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { Table, ConfigProvider, Select, Spin, Alert } from "antd";
+import React, { useState } from "react";
+import { Table, ConfigProvider } from "antd";
 import { IoEye } from "react-icons/io5";
-
 import { MdDeleteForever } from "react-icons/md";
 
 import ContactDetailsModal from "./ContactDetailsModal";
-import ContactDeleteModal from "./ContactDeleteModal";
+import { useContactQuery } from "../../../redux/apiSlices/contactSlice";
 
 const Contact = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedInquiry, setSelectedInquiry] = useState(null);
+
+  const { data: contactData, isLoading, isError } = useContactQuery();
+
+  // Extract inquiries from API response
+  const inquiries = contactData?.data?.result || [];
+
+  const showDetailsModal = (inquiry) => {
+    setSelectedInquiry(inquiry);
+    setIsDetailsModalOpen(true);
+  };
 
   const columns = [
     {
       title: "Serial",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "_id",
+      key: "_id",
       render: (_, __, index) => `#${index + 1}`,
     },
     { title: "Full Name", dataIndex: "fullName", key: "fullName" },
-    { title: "User Email", dataIndex: "email", key: "email" },
-    {
-      title: "Inquiry Topics",
-      dataIndex: "inquiryTopics",
-      key: "inquiryTopics",
-    },
+    { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
-    { title: "Your Inquiry", dataIndex: "description", key: "description" },
+    { title: "Description", dataIndex: "description", key: "description" },
     {
       title: "Action",
       key: "action",
@@ -37,7 +41,7 @@ const Contact = () => {
             className="hover:text-[#a11d26]"
             onClick={(e) => {
               e.preventDefault();
-              showDetailsModal(record);
+              showDetailsModal(record); // Pass inquiry data to modal
             }}
           >
             <IoEye size={24} />
@@ -75,36 +79,18 @@ const Contact = () => {
         }}
       >
         <div className="px-3">
-          <Table
-            columns={columns}
-            dataSource={rawdata} // Use local state here
-            rowKey="id"
-            // pagination={{
-            //   defaultPageSize: 5,
-            //   position: ["bottomRight"],
-            //   size: "default",
-            //   // total: localInquiries.length,
-            // }}
-          />
+          <Table columns={columns} dataSource={inquiries} rowKey="_id" />
         </div>
       </ConfigProvider>
+
       {/* Inquiry Details Modal */}
-      <ContactDetailsModal />
-      {/* Inquiry Delete Modal */}
-      <ContactDeleteModal />
+      <ContactDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        inquiryData={selectedInquiry}
+      />
     </div>
   );
 };
 
 export default Contact;
-
-const rawdata = [
-  {
-    id: 1,
-    fullName: "John Doe",
-    email: "john.doe@example.com",
-    inquiryTopics: ["Inquiry 1", "Inquiry 2"],
-    phone: "1234567890",
-    description: "This is a sample inquiry.",
-  },
-];

@@ -1,15 +1,7 @@
 import React from "react";
 import { Modal, ConfigProvider } from "antd";
 
-function ContactDetailsModal({ isModalOpen, setIsModalOpen, inquiryData }) {
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
+function ContactDetailsModal({ isOpen, onClose, inquiryData }) {
   return (
     <ConfigProvider
       theme={{
@@ -23,18 +15,10 @@ function ContactDetailsModal({ isModalOpen, setIsModalOpen, inquiryData }) {
           Form: {
             labelColor: "#ffffff",
           },
-          Table: {},
         },
       }}
     >
-      <Modal
-        open={isModalOpen}
-        onOk={handleOk}
-        width={500}
-        height={1000}
-        onCancel={handleCancel}
-        footer={null}
-      >
+      <Modal open={isOpen} onCancel={onClose} width={500} footer={null}>
         <div className="w-full flex flex-col items-center my-8">
           <h1 className="w-full mb-8 flex items-center justify-center text-white text-2xl font-sans">
             Inquiry Details
@@ -43,14 +27,7 @@ function ContactDetailsModal({ isModalOpen, setIsModalOpen, inquiryData }) {
             <div className="text-white w-full">
               <div className="flex mb-2">
                 <div className="w-32 font-bold flex justify-between mr-6">
-                  <span>Serial</span>
-                  <span>:</span>
-                </div>
-                <div>{inquiryData.serial}</div>
-              </div>
-              <div className="flex mb-2">
-                <div className="w-32 font-bold flex justify-between mr-6">
-                  <span>Fuull Name</span>
+                  <span>Full Name</span>
                   <span>:</span>
                 </div>
                 <div>{inquiryData.fullName}</div>
@@ -60,31 +37,22 @@ function ContactDetailsModal({ isModalOpen, setIsModalOpen, inquiryData }) {
                   <span>Email</span>
                   <span>:</span>
                 </div>
-                <div>{inquiryData.userEmail}</div>
+                <div>{inquiryData.email}</div>
               </div>
               <div className="flex mb-2">
                 <div className="w-32 font-bold flex justify-between mr-6">
-                  {" "}
-                  <span>Inquiry Topics</span>
-                  <span>:</span>
-                </div>
-                <div>{inquiryData.inquiryTopics}</div>
-              </div>
-              <div className="flex mb-2">
-                <div className="w-32 font-bold flex justify-between mr-6">
-                  {" "}
                   <span>Phone Number</span>
                   <span>:</span>
                 </div>
-                <div>{inquiryData.phoneNumber}</div>
+                <div>{inquiryData.phone}</div>
               </div>
-              <div className="flex mb-2 ">
-                <div className="min-w-32 font-bold flex justify-between mr-6">
-                  <span>Your Inquiry</span>
+              <div className="flex mb-2">
+                <div className="w-32 font-bold flex justify-between mr-6">
+                  <span>Description</span>
                   <span>:</span>
                 </div>
-                <div className=" min-w-20 h-auto text-wrap">
-                  {inquiryData.yourInquiry}
+                <div className="min-w-20 h-auto text-wrap">
+                  {inquiryData.description}
                 </div>
               </div>
             </div>

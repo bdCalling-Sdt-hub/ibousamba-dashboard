@@ -1,9 +1,20 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
+import { usePolicyQuery } from "../../../redux/apiSlices/policySlice";
 
 function AboutUs() {
   const editor = useRef(null);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState("Loading...");
+  const { data, isLoading, error } = usePolicyQuery("aboutUs");
+
+  // Update state when data is fetched
+  useEffect(() => {
+    if (data) {
+      setContent(data?.data?.content || "No content available");
+    }
+  }, [data]);
+
+  console.log("About US", data?.data?.content);
 
   const handleUpdate = (newContent) => {
     setContent(newContent);
