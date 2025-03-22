@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, ConfigProvider, Select, message } from "antd";
-import UploadComponent from "./UploadComponent";
+import {
+  Modal,
+  Form,
+  Input,
+  ConfigProvider,
+  Select,
+  message,
+  Upload,
+} from "antd";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import { PlusOutlined } from "@ant-design/icons";
 import { useCategoryQuery } from "../../../redux/apiSlices/categorySlice";
 import { useGetSubCategoriesQuery } from "../../../redux/apiSlices/subCategorySlice";
 import {
@@ -19,7 +27,7 @@ function AddProductModal({
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSCategory] = useState(null);
   const [categoryID, setCategoryID] = useState(null);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [fileList, setFileList] = useState([]);
 
   // Use RTK Query mutation hooks
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
@@ -47,14 +55,13 @@ function AddProductModal({
       if (editingProduct.images && editingProduct.images.length > 0) {
         const formattedImages = editingProduct.images.map((img, index) => ({
           uid: `-${index}`,
-          name: `Image ${index + 2}`,
+          name: `Image ${index + 1}`,
           status: "done",
           url: img, // The image URL
-          originFileObj: img, // Store the URL for backend reference
         }));
-        setUploadedFiles(formattedImages);
+        setFileList(formattedImages);
       } else {
-        setUploadedFiles([]);
+        setFileList([]);
       }
 
       // Set category and subcategory if editing
@@ -67,7 +74,7 @@ function AddProductModal({
       }
     } else {
       form.resetFields();
-      setUploadedFiles([]);
+      setFileList([]);
       setSelectedCategory(null);
       setSelectedSCategory(null);
       setCategoryID(null);
@@ -86,98 +93,42 @@ function AddProductModal({
     setSelectedSCategory(value);
   };
 
-  // Function to handle files from Upload component
-  const handleFileUpload = (files) => {
-    setUploadedFiles(files);
-    console.log("Uploaded Files:", files); // Log the uploaded files to the console
+  // Functions for handling image uploads
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must be smaller than 2MB!");
+    }
+    return false; // Prevent auto upload
   };
 
-  // const onFinish = async (values) => {
-  //   try {
-  //     const formData = new FormData();
+  const handleChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
 
-  //     // Append all form fields with proper naming for backend
-  //     formData.append("name", values.productName);
-  //     formData.append("categoryId", values.productCategory);
-  //     formData.append("subCategoryId", values.productSubCategory);
-  //     formData.append("price", values.productPrice);
-  //     formData.append("capacity", values.productCapacity);
-  //     formData.append("model", values.productModel);
-  //     formData.append("type", values.productType);
+  const customRequest = ({ file, onSuccess }) => {
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+  };
 
-  //     if (values.productPower) {
-  //       formData.append("power", values.productPower);
-  //     }
-
-  //     formData.append("description", values.productDescription);
-
-  //     // Append images - Using the field name expected by the backend
-  //     uploadedFiles.forEach((file) => {
-  //       if (file.originFileObj instanceof File) {
-  //         // Append as 'images' which seems to be what the backend expects based on response
-  //         formData.append("images", file.originFileObj);
-  //       }
-  //     });
-
-  //     // If editing and there are existing images to keep
-  //     if (editingProduct && editingProduct.images) {
-  //       // Handle existing images according to your backend expectations
-  //       const existingImageUrls = uploadedFiles
-  //         .filter((file) => typeof file.url === "string")
-  //         .map((file) => file.url);
-
-  //       if (existingImageUrls.length > 0) {
-  //         formData.append("existingImages", JSON.stringify(existingImageUrls));
-  //       }
-  //     }
-
-  //     let response;
-  //     // Call the appropriate mutation based on whether we're editing or adding
-  //     if (editingProduct) {
-  //       response = await updateProduct({
-  //         id: editingProduct._id,
-  //         data: formData,
-  //       }).unwrap();
-  //     } else {
-  //       response = await createProduct(formData).unwrap();
-  //     }
-
-  //     // Check if the response indicates success
-  //     if (response.success) {
-  //       message.success(response.message || "Product saved successfully!");
-
-  //       // Call the success callback if provided
-  //       if (onSuccess && typeof onSuccess === "function") {
-  //         onSuccess(response.data);
-  //       }
-
-  //       // Reset form and state
-  //       form.resetFields();
-  //       setUploadedFiles([]);
-  //       setIsModalOpen(false);
-  //     } else {
-  //       message.error(response.message || "Operation failed");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating/updating product:", error);
-  //     const errorMessage =
-  //       error.data?.message || "Failed to save product. Please try again.";
-  //     message.error(errorMessage);
-
-  //     // If there are specific error sources from the backend
-  //     if (error.data?.errorSources?.length > 0) {
-  //       error.data.errorSources.forEach((err) => {
-  //         message.error(`${err.path}: ${err.message}`);
-  //       });
-  //     }
-  //   }
-  // };
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
 
   const onFinish = async (values) => {
     try {
+      // Create a new FormData object
       const formData = new FormData();
 
-      // Append all form fields with proper naming for backend
+      // Append form fields to FormData
       formData.append("name", values.productName);
       formData.append("categoryId", values.productCategory);
       formData.append("subCategoryId", values.productSubCategory);
@@ -192,18 +143,17 @@ function AddProductModal({
 
       formData.append("description", values.productDescription);
 
-      // Append images - Using the field name expected by the backend
-      uploadedFiles.forEach((file) => {
-        if (file.originFileObj instanceof File) {
-          // Append as 'images' which seems to be what the backend expects based on response
+      // Append the uploaded images to FormData
+      fileList.forEach((file) => {
+        // Check if this is a new file (has originFileObj) or an existing file (has url)
+        if (file.originFileObj) {
           formData.append("images", file.originFileObj);
         }
       });
 
-      // If editing and there are existing images to keep
+      // If editing, handle existing images
       if (editingProduct && editingProduct.images) {
-        // Handle existing images according to your backend expectations
-        const existingImageUrls = uploadedFiles
+        const existingImageUrls = fileList
           .filter((file) => typeof file.url === "string")
           .map((file) => file.url);
 
@@ -212,34 +162,46 @@ function AddProductModal({
         }
       }
 
-      // Log the formData and uploaded files for debugging
-      console.log("FormData:", formData);
-      console.log("Uploaded Files:", uploadedFiles);
+      // Log all form data
+      console.log("Form values:", values);
+      console.log("File list:", fileList);
 
-      let response;
+      // Display all FormData entries
+      console.log("FormData entries:");
+      for (let [key, value] of formData.entries()) {
+        if (key === "images") {
+          console.log(key, ":", value.name);
+        } else {
+          console.log(key, ":", value);
+        }
+      }
+
       // Call the appropriate mutation based on whether we're editing or adding
+      let response;
       if (editingProduct) {
+        // Update product
         response = await updateProduct({
           id: editingProduct._id,
           data: formData,
         }).unwrap();
       } else {
+        // Create new product
         response = await createProduct(formData).unwrap();
       }
 
-      // Check if the response indicates success
+      // Check for success
       if (response.success) {
         message.success(response.message || "Product saved successfully!");
 
-        // Call the success callback if provided
+        // Call onSuccess callback if provided
         if (onSuccess && typeof onSuccess === "function") {
           onSuccess(response.data);
         }
 
-        // Reset form and state
+        // Reset form and state after success
         form.resetFields();
-        setUploadedFiles([]);
-        setIsModalOpen(false);
+        setFileList([]); // Clear uploaded files
+        setIsModalOpen(false); // Close modal
       } else {
         message.error(response.message || "Operation failed");
       }
@@ -249,7 +211,7 @@ function AddProductModal({
         error.data?.message || "Failed to save product. Please try again.";
       message.error(errorMessage);
 
-      // If there are specific error sources from the backend
+      // Display specific error sources from the backend
       if (error.data?.errorSources?.length > 0) {
         error.data.errorSources.forEach((err) => {
           message.error(`${err.path}: ${err.message}`);
@@ -436,19 +398,24 @@ function AddProductModal({
                 name="productImage"
                 rules={[
                   {
-                    required: true,
-                    message: "Please upload 3 image!",
+                    required: fileList.length === 0,
+                    message: "Please upload at least one image!",
                   },
-                ]} // Add required validation
-                valuePropName="fileList" // Ensure Form recognizes the value
-                getValueFromEvent={(fileList) => fileList || []} // Convert event to correct value
+                ]}
               >
-                <UploadComponent
-                  onFileUpload={(files) =>
-                    form.setFieldsValue({ productImage: files })
-                  } // Update Form value
-                  existingFiles={uploadedFiles}
-                />
+                <Upload
+                  listType="picture-card"
+                  fileList={fileList}
+                  onChange={handleChange}
+                  showUploadList={true}
+                  beforeUpload={beforeUpload}
+                  customRequest={customRequest}
+                  multiple={true}
+                  maxCount={3} // Maximum number of files allowed
+                  accept="image/jpeg,image/png"
+                >
+                  {fileList.length >= 3 ? null : uploadButton}
+                </Upload>
               </Form.Item>
             </div>
           </div>

@@ -22,14 +22,13 @@ function ProductList() {
 
   // Fetch products using the useProductQuery hook
   const { data, isLoading, isError, error } = useProductQuery(page);
-  console.log("999", data);
 
   // Add a delete mutation hook
   const [deleteProduct] = useDeleteProductMutation();
 
   useEffect(() => {
     if (data) {
-      console.log("Fetched products:", data?.data?.result);
+      // console.log("Fetched products:", data?.data?.result);
       setProducts(data?.data?.result);
     }
 

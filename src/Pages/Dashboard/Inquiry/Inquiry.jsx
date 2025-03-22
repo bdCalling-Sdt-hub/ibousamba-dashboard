@@ -41,7 +41,7 @@ function Inquiry() {
       <div className="px-3">
         <div className="flex items-center gap-4">
           <p className="text-sm text-samba py-4">Latest Inquiry List:</p>
-          <Select
+          {/* <Select
             placeholder="Select Category"
             className="border rounded-lg"
             style={{ width: 180 }}
@@ -62,7 +62,7 @@ function Inquiry() {
               { value: "lucy", label: "Lucy" },
               { value: "Yiminghe", label: "yiminghe" },
             ]}
-          />
+          /> */}
         </div>
         {/* Passing details as a prop */}
         <div className="custom-table">
