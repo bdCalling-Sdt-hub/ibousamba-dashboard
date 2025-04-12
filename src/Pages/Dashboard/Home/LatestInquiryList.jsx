@@ -144,7 +144,7 @@ function LatestInquiryList() {
       }}
     >
       <Table
-        size="middle"
+        size="small"
         dataSource={latestInquiry?.data?.result || []}
         columns={columns}
         pagination={true}

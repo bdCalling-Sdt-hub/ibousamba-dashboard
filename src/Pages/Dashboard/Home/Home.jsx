@@ -67,7 +67,7 @@ const Home = () => {
           </div>
 
           <div
-            className="h-60 overflow-y-scroll rounded-lg bg-quilocoP [&::-webkit-scrollbar]:w-0
+            className="h-[] overflow-y-scroll rounded-lg bg-quilocoP [&::-webkit-scrollbar]:w-0
                     [&::-webkit-scrollbar-track]:rounded-full
                     [&::-webkit-scrollbar-track]:bg-gray-100
                     [&::-webkit-scrollbar-thumb]:rounded-full

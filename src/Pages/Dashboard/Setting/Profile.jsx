@@ -5,6 +5,7 @@ import { HiMiniPencil } from "react-icons/hi2";
 import { useUser } from "../../../provider/User";
 import { imageUrl } from "../../../redux/api/baseApi";
 import { useUpdateProfileMutation } from "../../../redux/apiSlices/profileSlice";
+import { MdPhotoCamera } from "react-icons/md";
 
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -49,7 +50,7 @@ function Profile() {
               }}
             >
               <button>
-                <FaFeather
+                <MdPhotoCamera
                   size={30}
                   className="text-samba absolute top-16 left-28 rounded-full bg-black p-1"
                 />
