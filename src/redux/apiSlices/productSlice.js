@@ -34,7 +34,6 @@ const productSlice = api.injectEndpoints({
         url: `/product/count`,
         method: "GET",
       }),
-      providesTags: ["Product"],
     }),
     product: builder.query({
       query: (page) => ({

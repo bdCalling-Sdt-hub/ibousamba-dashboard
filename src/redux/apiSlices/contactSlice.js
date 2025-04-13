@@ -13,7 +13,7 @@ const contactSlice = api.injectEndpoints({
     }),
     contact: builder.query({
       query: (page, limit) => ({
-        url: `/contact`, //?page=${page}&limit=${limit}
+        url: `/contact?page=${page}&limit=${limit}`, //?page=${page}&limit=${limit}
         method: "GET",
       }),
       providesTags: ["Contact"],

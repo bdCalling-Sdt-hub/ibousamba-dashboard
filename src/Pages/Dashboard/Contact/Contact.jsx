@@ -9,9 +9,10 @@ import { useContactQuery } from "../../../redux/apiSlices/contactSlice";
 const Contact = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
+  const [page, setPage] = useState(1);
 
-  const { data: contactData, isLoading, isError } = useContactQuery();
-
+  const { data: contactData, isLoading, isError } = useContactQuery(page);
+  console.log(contactData);
   // Extract inquiries from API response
   const inquiries = contactData?.data?.result || [];
 
@@ -85,7 +86,20 @@ const Contact = () => {
             </p>
           </div>
           <div className="custom-table">
-            <Table columns={columns} dataSource={inquiries} rowKey="_id" />
+            <Table
+              columns={columns}
+              dataSource={inquiries}
+              rowKey="_id"
+              pagination={{
+                onChange: (page) => setPage(page),
+                showSizeChanger: false,
+                pageSize: contactData?.meta?.page,
+                total: contactData?.meta?.total,
+                showTotal: (total, range) => (
+                  <span className="text-white">{`Total ${total} items`}</span>
+                ),
+              }}
+            />
           </div>
         </div>
       </ConfigProvider>

@@ -16,6 +16,7 @@ import {
   useCreateProductMutation,
   useUpdateProductMutation,
 } from "../../../redux/apiSlices/productSlice";
+import { getImageUrl } from "../../../components/common/ImageUrl";
 
 function AddProductModal({
   isModalOpen,
@@ -57,7 +58,7 @@ function AddProductModal({
           uid: `-${index}`,
           name: `Image ${index + 1}`,
           status: "done",
-          url: img, // The image URL
+          url: getImageUrl(img), // The image URL
         }));
         setFileList(formattedImages);
       } else {
@@ -118,8 +119,8 @@ function AddProductModal({
 
   const uploadButton = (
     <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <PlusOutlined className="text-black" />
+      <div style={{ marginTop: 8, color: "black" }}>Upload</div>
     </div>
   );
 

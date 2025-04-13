@@ -11,7 +11,8 @@ import InquiryDeleteModal from "./InquiryDeleteModal";
 import Loading from "../../../components/Loading";
 
 function Inquiry() {
-  const { data: inquiries, isLoading, isError } = useInquiryQuery(); // Fetch inquiries
+  const [page, setPage] = useState(1);
+  const { data: inquiries, isLoading, isError } = useInquiryQuery(page); // Fetch inquiries
 
   console.log("inquiries=", inquiries?.data?.result);
   const details = inquiries?.data?.result || []; // Ensure it's always an array
@@ -196,11 +197,15 @@ const InquiryTable = ({ inquiries }) => {
           columns={columns}
           dataSource={localInquiries}
           rowKey="_id"
+          size="middle"
           pagination={{
-            defaultPageSize: 5,
-            position: ["bottomRight"],
-            size: "default",
-            total: localInquiries.length,
+            onChange: (page) => setPage(page),
+            showSizeChanger: false,
+            pageSize: inquiries?.meta?.page,
+            total: inquiries?.meta?.total,
+            showTotal: (total, range) => (
+              <span className="text-white">{`Total ${total} items`}</span>
+            ),
           }}
         />
       </ConfigProvider>

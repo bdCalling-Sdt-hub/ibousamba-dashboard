@@ -22,6 +22,7 @@ export const api = createApi({
   baseQuery,
   endpoints: () => ({}),
   tagTypes: [
+    "Auth",
     "Category",
     "SubCategory",
     "Brand",

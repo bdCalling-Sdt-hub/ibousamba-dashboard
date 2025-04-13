@@ -46,8 +46,8 @@ const inquirySlice = api.injectEndpoints({
     }),
 
     inquiry: builder.query({
-      query: () => ({
-        url: `/inquiry`,
+      query: (page, limit) => ({
+        url: `/inquiry?page=${page}&limit=${limit}`,
         method: "GET",
       }),
       providesTags: ["Inquiry"],

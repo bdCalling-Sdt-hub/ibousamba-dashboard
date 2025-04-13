@@ -16,8 +16,9 @@ const MainCategoryTable = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMode, setModalMode] = useState("edit"); // "edit" or "delete"
   const [currentRecord, setCurrentRecord] = useState(null);
+  const [page, setPage] = useState(1);
 
-  const { data, isLoading: isCategoryLoading } = useCategoryQuery();
+  const { data, isLoading: isCategoryLoading } = useCategoryQuery(page);
   const [deleteCategory] = useDeleteCategoryMutation();
   const [updateCategory, { isLoading }] = useUpdateCategoryMutation();
 
@@ -129,6 +130,7 @@ const MainCategoryTable = () => {
     setIsModalVisible(true);
   };
 
+  if (isLoading) return <Loading />;
   return (
     <div>
       <ConfigProvider
@@ -161,6 +163,16 @@ const MainCategoryTable = () => {
                 size: "default",
                 total: data?.data?.length || 0,
               }}
+
+              // pagination={{
+              //   onChange: (page) => setPage(page),
+              //   showSizeChanger: false, // 🔥 Hide page size dropdown
+              //   pageSize: orderList?.data?.pagination?.limit,
+              //   total: orderList?.data?.pagination?.total,
+              //   showTotal: (total, range) => (
+              //     <span className="text-white">{`Total ${total} items`}</span>
+              //   ),
+              // }}
             />
           )}
         </div>

@@ -18,6 +18,7 @@ const categorySlice = api.injectEndpoints({
           body: data,
         };
       },
+      invalidatesTags: ["Category"],
     }),
     deleteCategory: builder.mutation({
       query: (id) => {
@@ -29,8 +30,8 @@ const categorySlice = api.injectEndpoints({
       invalidatesTags: ["Category"],
     }),
     category: builder.query({
-      query: () => ({
-        url: "/category",
+      query: (page) => ({
+        url: `/category?page=${page}`,
         method: "GET",
         // };
       }),

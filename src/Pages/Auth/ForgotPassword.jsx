@@ -15,23 +15,22 @@ const ForgotPassword = () => {
       console.log("Forgot Password Success:", response);
       localStorage.setItem("forgetToken", response.data.forgetToken);
       navigate(`/auth/verify-otp?email=${values.email}`);
-      // navigate(`/auth/verify-otp`);
     } catch (err) {
       console.error("Forgot Password Error:", err);
     }
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center  ">
+    <div className="w-full h-full flex items-center justify-center">
       <div className="border-r-2 border-sambaSD w-full h-[500px] flex items-center justify-center mr-4">
         <img src={Forgotpassword} width={400} />
       </div>
-      <div className="flex flex-col items-center justify-center  w-full ml-4">
-        <div className=" mb-8 w-full">
+      <div className="flex flex-col items-center justify-center w-full ml-4">
+        <div className="mb-8 w-full">
           <h1 className="text-[25px] text-white font-semibold mb-2">
             Forgot Password
           </h1>
-          <p className="w-full text-[#C0C7CA] ">
+          <p className="w-full text-[#C0C7CA]">
             Enter your email below to reset your password
           </p>
         </div>
@@ -42,9 +41,8 @@ const ForgotPassword = () => {
               Input: {
                 colorBgBase: "white",
                 colorBgContainer: "#1f1f1f",
-                // colorBorder: "transparent",
                 hoverBorderColor: "white",
-                activeBorderColor: "wgite",
+                activeBorderColor: "white",
                 boxShadow: "none",
               },
             },
@@ -57,11 +55,14 @@ const ForgotPassword = () => {
             <Form.Item
               label={<p className="text-base text-white font-normal">Email</p>}
               name="email"
-              id="email"
               rules={[
                 {
                   required: true,
                   message: "Please input your email!",
+                },
+                {
+                  type: "email",
+                  message: "Please enter a valid email!",
                 },
               ]}
             >
@@ -71,6 +72,13 @@ const ForgotPassword = () => {
               />
             </Form.Item>
 
+            {error && (
+              <p className="text-red-500 text-sm mb-2">
+                {error?.data?.message ||
+                  "Something went wrong. Please try again."}
+              </p>
+            )}
+
             <Form.Item>
               <button
                 htmlType="submit"
@@ -79,14 +87,13 @@ const ForgotPassword = () => {
                   width: "100%",
                   height: 45,
                   color: "white",
-                  fontWeight: "400px",
+                  fontWeight: "400", // fixed this
                   fontSize: "18px",
-
                   marginTop: 20,
                 }}
                 className="flex items-center justify-center bg-samba hover:bg-samba/90 rounded-lg"
               >
-                Send Code
+                {isLoading ? "Sending..." : "Send Code"}
               </button>
             </Form.Item>
           </Form>

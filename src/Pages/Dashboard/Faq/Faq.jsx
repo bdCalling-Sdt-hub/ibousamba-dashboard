@@ -237,7 +237,9 @@ function Faq() {
               </Button>,
             ]}
           >
-            <p>Are you sure you want to delete this FAQ?</p>
+            <p className="text-black">
+              Are you sure you want to delete this FAQ?
+            </p>
           </Modal>
         </div>
       </ConfigProvider>

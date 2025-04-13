@@ -7,6 +7,7 @@ import { useInquiryCountQuery } from "../../../redux/apiSlices/inquirySlice";
 
 import LatestInquiryList from "./LatestInquiryList";
 import { Link } from "react-router-dom";
+import Loading from "../../../components/Loading";
 
 const Card = ({ item }) => (
   <div className="flex w-full items-center justify-start pl-10 h-28 rounded-xl bg-quilocoP gap-5">
@@ -21,28 +22,36 @@ const Card = ({ item }) => (
     </div>
   </div>
 );
-
 const Home = () => {
-  const productCount = useProductCountQuery();
-  const inquiryCount = useInquiryCountQuery();
+  const {
+    data: productCount,
+    isError: productError,
+    isLoading: productLoading,
+  } = useProductCountQuery();
+  const {
+    data: inquiryCount,
+    isError: inquiryError,
+    isLoading: inquiryLoading,
+  } = useInquiryCountQuery();
 
-  console.log("productCount", productCount?.data?.data?.total);
-  console.log("inquiryCount", inquiryCount?.data?.data?.total);
+  if (productLoading || inquiryLoading) return <Loading />;
+  if (productError || inquiryError) return <div>Error fetching data</div>;
 
   const stats = [
     {
       label: "Total Inquiry",
-      value: inquiryCount?.data?.data?.total,
+      value: inquiryCount?.data?.total,
       icon: <FaFolderOpen size={60} className="text-white" />,
       bg: "bg-quilocoS",
     },
     {
       label: "Total Products",
-      value: productCount?.data?.data?.total,
+      value: productCount?.data?.total,
       icon: <FaBoxOpen size={60} className="text-white" />,
       bg: "bg-quilocoS",
     },
   ];
+
   return (
     <div className="px-3">
       <div className="flex flex-col flex-wrap items-end gap-5 justify-between w-full bg-transparent rounded-md">
@@ -51,12 +60,12 @@ const Home = () => {
             <Card key={index} item={item} />
           ))}
         </div>
-        <div className="flex items-center justify-between flex-wrap lg:flex-nowrap gap-5 w-full ">
+        <div className="flex items-center justify-between flex-wrap lg:flex-nowrap gap-5 w-full">
           <div className="w-full p-4 bg-quilocoP rounded-lg">
             <Inquiry />
           </div>
         </div>
-        <div className="w-full ">
+        <div className="w-full">
           <div className="w-full flex items-center justify-between mb-2 text-white">
             <h3 className=" text-[24px] text-samba font-bold">
               Latest inquiry list:

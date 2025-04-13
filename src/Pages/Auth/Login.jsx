@@ -1,16 +1,15 @@
 import { Button, Checkbox, Form, Input, ConfigProvider, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import FormItem from "../../components/common/FormItem";
+import Spinner from "../../components/common/Spinner";
 import { useLoginMutation } from "../../redux/apiSlices/authSlice";
 // import Cookies from "js-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [login, { isLoading, error }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
 
   const onFinish = async (values) => {
-    console.log(values);
     try {
       const response = await login({
         email: values.email,
@@ -18,11 +17,20 @@ const Login = () => {
       }).unwrap();
 
       console.log("Login Success:", response);
+
+      // Save token
       localStorage.setItem("token", JSON.stringify(response.data.accessToken));
+
+      // Show success message
+      message.success("Login Successful!");
+
+      // Navigate to homepage
       navigate("/");
     } catch (err) {
       console.error("Login Failed:", err);
-      message.error(err);
+
+      // Show error message
+      message.error(err?.data?.message || "Login failed. Please try again.");
     }
   };
 
@@ -42,9 +50,8 @@ const Login = () => {
             Input: {
               colorBgBase: "white",
               colorBgContainer: "#1f1f1f",
-              // colorBorder: "transparent",
               hoverBorderColor: "white",
-              activeBorderColor: "wgite",
+              activeBorderColor: "white",
               boxShadow: "none",
             },
           },
@@ -92,13 +99,13 @@ const Login = () => {
           </Form.Item>
 
           <div className="flex items-center justify-between">
-            <Form.Item
+            {/* <Form.Item
               style={{ marginBottom: 0 }}
               name="remember"
               valuePropName="checked"
             >
               <Checkbox className="text-[#A3A3A3]">Remember me</Checkbox>
-            </Form.Item>
+            </Form.Item> */}
 
             <a
               className="login-form-forgot text-white hover:text-[#A3A3A3] font-semibold"
@@ -118,12 +125,11 @@ const Login = () => {
                 color: "white",
                 fontWeight: "400px",
                 fontSize: "18px",
-
                 marginTop: 20,
               }}
               className="flex items-center justify-center bg-samba hover:bg-samba/90 rounded-lg text-base"
             >
-              {/* {isLoading? < Spinner/> : "Sign in"} */} Sign in
+              {isLoading ? <Spinner /> : "Sign in"}
             </button>
           </Form.Item>
         </Form>
