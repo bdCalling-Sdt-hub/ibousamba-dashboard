@@ -10,6 +10,7 @@ import {
   useDeleteProductMutation,
 } from "../../../redux/apiSlices/productSlice";
 import { imageUrl } from "../../../redux/api/baseApi";
+import { getImageUrl } from "../../../components/common/ImageUrl";
 
 function ProductList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,7 +81,7 @@ function ProductList() {
       console.error("Error deleting product:", err);
     }
   };
-  // console.log(data?.data?.meta?.limit);
+  console.log(data?.data?.result);
 
   const showDeleteModal = (product) => {
     if (!product || !product._id) {
@@ -223,7 +224,7 @@ const columns = (showEditModal, showDeleteModal) => [
           <Avatar
             shape="square"
             size="default"
-            src={`${imageUrl}${record?.images}`}
+            src={getImageUrl(record?.images[0])}
             alt={record.name}
             onError={(e) => {
               console.error("Image failed to load:", record.productImg);
