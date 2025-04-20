@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Input, Button, Upload, Image } from "antd";
+import { Modal, Input, Button, Upload, Image, message } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { imageUrl } from "../../../../redux/api/baseApi";
 
@@ -13,13 +13,13 @@ const EditSubCategoryModal = ({ visible, onCancel, onOk, record }) => {
   useEffect(() => {
     if (record) {
       setCategoryName(record?.category || "");
-      setPreviewImage(record?.categoryImg || ""); // Default to placeholder if no image
-      setFileList([]); // Clear the file list initially
+      setPreviewImage(record?.categoryImg || "");
+      setFileList([]);
     }
   }, [record]);
 
   const handleClose = () => {
-    setCategoryName(""); // Clear fields when closing the modal
+    setCategoryName("");
     setFileList([]);
     setPreviewImage("");
     setIsEditingImage(false);
@@ -30,13 +30,7 @@ const EditSubCategoryModal = ({ visible, onCancel, onOk, record }) => {
     const formData = new FormData();
     formData.append("name", categoryName);
     if (fileList.length > 0) {
-      formData.append("image", fileList[0].originFileObj); // Add the file to the form data
-    }
-
-    // Log the updated category name and image
-    console.log("Updated Category Name:", categoryName);
-    if (fileList.length > 0) {
-      console.log("Updated Image:", fileList[0].originFileObj);
+      formData.append("image", fileList[0].originFileObj);
     }
 
     onOk(formData);
@@ -51,8 +45,24 @@ const EditSubCategoryModal = ({ visible, onCancel, onOk, record }) => {
     setFileList(newFileList);
     if (newFileList.length > 0) {
       handlePreview(newFileList[0]);
-      console.log("Image Changed:", newFileList[0].originFileObj); // Log the updated image
     }
+  };
+
+  const beforeUpload = (file) => {
+    const isImage = file.type.startsWith("image/");
+    const isUnder5MB = file.size / 1024 / 1024 < 5;
+
+    if (!isImage) {
+      message.error("Only image files are allowed!");
+      return Upload.LIST_IGNORE;
+    }
+
+    if (!isUnder5MB) {
+      message.error("Image must be smaller than 5MB!");
+      return Upload.LIST_IGNORE;
+    }
+
+    return false; // Prevent auto upload
   };
 
   return (
@@ -86,8 +96,11 @@ const EditSubCategoryModal = ({ visible, onCancel, onOk, record }) => {
           fileList={fileList}
           onPreview={handlePreview}
           onChange={handleChange}
+          beforeUpload={beforeUpload}
         >
-          {fileList.length >= 1 ? null : <div>Upload</div>}
+          {fileList.length >= 1 ? null : (
+            <div className="text-black">Upload</div>
+          )}
         </Upload>
       )}
 
@@ -96,7 +109,6 @@ const EditSubCategoryModal = ({ visible, onCancel, onOk, record }) => {
         value={categoryName}
         onChange={(e) => {
           setCategoryName(e.target.value);
-          console.log("Category Name Changed:", e.target.value); // Log the updated name
         }}
         className="h-9 mt-3"
       />

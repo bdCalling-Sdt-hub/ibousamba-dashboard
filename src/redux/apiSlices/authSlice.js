@@ -1,18 +1,15 @@
 import { api } from "../api/baseApi";
 
-const forgetToken = localStorage.getItem("forgetToken");
-const forgetOtpMatchToken = localStorage.getItem("forgetOtpMatchToken");
-
 const authSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     otpVerify: builder.mutation({
       query: (data) => {
+        const forgetToken = localStorage.getItem("forgetToken");
         return {
           method: "PATCH",
           url: "/auth/otp-verify",
           body: data,
           headers: {
-            // Authorization: `Bearer ${forgetToken}`,
             token: forgetToken,
           },
         };
@@ -48,6 +45,7 @@ const authSlice = api.injectEndpoints({
     }),
     resetPassword: builder.mutation({
       query: (value) => {
+        const forgetOtpMatchToken = localStorage.getItem("forgetOtpMatchToken");
         return {
           method: "PATCH",
           url: "/auth/forgot-password-reset",
@@ -65,11 +63,11 @@ const authSlice = api.injectEndpoints({
           method: "PATCH",
           url: "/auth/change-password",
           body: data,
-          // headers: {
-          //   Authorization: `Bearer ${JSON.parse(
-          //     localStorage.getItem("token")
-          //   )}`,
-          // },
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          },
           // headers: {
           //   token: forgetOtpMatchToken,
           // },

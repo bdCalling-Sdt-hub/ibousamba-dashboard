@@ -18,7 +18,11 @@ const MainCategoryTable = () => {
   const [currentRecord, setCurrentRecord] = useState(null);
   const [page, setPage] = useState(1);
 
-  const { data, isLoading: isCategoryLoading } = useCategoryQuery(page);
+  const { data: categoryList, isLoading: isCategoryLoading } =
+    useCategoryQuery(page);
+
+  console.log(categoryList?.data?.result);
+
   const [deleteCategory] = useDeleteCategoryMutation();
   const [updateCategory, { isLoading }] = useUpdateCategoryMutation();
 
@@ -155,24 +159,18 @@ const MainCategoryTable = () => {
           ) : (
             <Table
               columns={columns}
-              dataSource={data?.data}
+              dataSource={categoryList?.data?.result}
               rowKey="_id"
+              size="small"
               pagination={{
-                defaultPageSize: 5,
-                position: ["bottomRight"],
-                size: "default",
-                total: data?.data?.length || 0,
+                onChange: (page) => setPage(page),
+                showSizeChanger: false, // 🔥 Hide page size dropdown
+                pageSize: categoryList?.data?.meta?.limit,
+                total: categoryList?.data?.meta?.total,
+                showTotal: (total, range) => (
+                  <span className="text-white">{`Total ${total} items`}</span>
+                ),
               }}
-
-              // pagination={{
-              //   onChange: (page) => setPage(page),
-              //   showSizeChanger: false, // 🔥 Hide page size dropdown
-              //   pageSize: orderList?.data?.pagination?.limit,
-              //   total: orderList?.data?.pagination?.total,
-              //   showTotal: (total, range) => (
-              //     <span className="text-white">{`Total ${total} items`}</span>
-              //   ),
-              // }}
             />
           )}
         </div>

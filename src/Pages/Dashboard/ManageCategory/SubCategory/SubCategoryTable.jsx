@@ -15,20 +15,24 @@ const SubCategoryTable = ({ categoryID }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMode, setModalMode] = useState("edit"); // "edit" or "delete"
   const [currentRecord, setCurrentRecord] = useState(null);
-
+  const [page, setPage] = useState(1);
   const [deleteSubCategory, { isLoading: isDeleting }] =
     useDeleteSubCategoryMutation();
   const [updateSubCategory, { isLoading: isUpdating }] =
     useUpdateSubCategoryMutation();
 
   // Fetch subcategories from API only if categoryID is valid
-  const { data, isLoading, error } = useGetSubCategoriesQuery(categoryID, {
-    skip: !categoryID, // Skip the query if categoryID is undefined
-  });
+  const { data, isLoading, error } = useGetSubCategoriesQuery(
+    categoryID,
+    page,
+    {
+      skip: !categoryID, // Skip the query if categoryID is undefined
+    }
+  );
 
   // Transform API data for table
   const subCategoryData =
-    data?.data?.map((item, index) => ({
+    data?.data?.result?.map((item, index) => ({
       key: item._id,
       serial: String(index + 1).padStart(3, "0"),
       categoryImg: item.image || "https://via.placeholder.com/50", // Fallback Image
@@ -166,11 +170,15 @@ const SubCategoryTable = ({ categoryID }) => {
             columns={columns}
             dataSource={subCategoryData}
             loading={isLoading}
+            size="small"
             pagination={{
-              defaultPageSize: 5,
-              position: ["bottomRight"],
-              size: "default",
-              total: subCategoryData.length,
+              onChange: (page) => setPage(page),
+              showSizeChanger: false, // 🔥 Hide page size dropdown
+              pageSize: data?.data?.meta?.limit,
+              total: data?.data?.meta?.total,
+              showTotal: (total, range) => (
+                <span className="text-white">{`Total ${total} items`}</span>
+              ),
             }}
           />
         </div>
@@ -185,7 +193,7 @@ const SubCategoryTable = ({ categoryID }) => {
           okText="Delete"
           okButtonProps={{ danger: true }}
         >
-          <p className="text-black">
+          <p className="text-black ">
             Are you sure you want to delete <b>{currentRecord?.category}</b>?
           </p>
         </Modal>

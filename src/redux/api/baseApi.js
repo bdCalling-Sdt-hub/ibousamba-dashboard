@@ -30,5 +30,6 @@ export const api = createApi({
     "FAQ",
     "Inquiry",
     "Profile",
+    "Notification",
   ],
 });

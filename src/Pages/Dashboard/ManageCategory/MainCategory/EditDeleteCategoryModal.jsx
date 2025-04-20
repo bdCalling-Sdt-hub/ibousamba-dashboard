@@ -7,9 +7,8 @@ import {
   ConfigProvider,
   Image,
   Button,
-  Form,
 } from "antd";
-import { PlusOutlined, EditOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { imageUrl } from "../../../../redux/api/baseApi";
 
 const EditDeleteCategoryModal = ({
@@ -26,7 +25,6 @@ const EditDeleteCategoryModal = ({
   const [previewImage, setPreviewImage] = useState("");
   const [isEditingImage, setIsEditingImage] = useState(false);
 
-  // Reset state when modal opens or record changes
   useEffect(() => {
     if (visible && record) {
       setCategoryName(record.name || "");
@@ -42,11 +40,10 @@ const EditDeleteCategoryModal = ({
             ]
           : []
       );
-      setUploadedFile(null); // Reset uploaded file
+      setUploadedFile(null);
       setPreviewImage(record.image ? `${imageUrl}${record.image}` : "");
       setIsEditingImage(false);
     } else {
-      // Clear state when modal closes
       setCategoryName("");
       setFileList([]);
       setUploadedFile(null);
@@ -58,29 +55,34 @@ const EditDeleteCategoryModal = ({
     setCategoryName(e.target.value);
   };
 
-  const handleUploadChange = ({ fileList: newFileList, file }) => {
+  const handleUploadChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
-    if (file.status !== "uploading") {
-      setUploadedFile(file.originFileObj || file);
-
-      // Create preview image
-      if (file.originFileObj) {
+    if (newFileList.length > 0) {
+      const file = newFileList[0].originFileObj;
+      if (file) {
         const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
         reader.onload = () => setPreviewImage(reader.result);
-        reader.onerror = (error) => console.error("Error reading file:", error);
+        reader.readAsDataURL(file);
+        setUploadedFile(file);
       }
     }
   };
 
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith("image/");
+    const isLt5MB = file.size / 1024 / 1024 < 5;
+
     if (!isImage) {
       message.error("You can only upload image files!");
       return Upload.LIST_IGNORE;
     }
-    setUploadedFile(file);
-    return false; // Prevent auto upload
+
+    if (!isLt5MB) {
+      message.error("Image must be smaller than 5MB!");
+      return Upload.LIST_IGNORE;
+    }
+
+    return true; // Allow upload
   };
 
   const handleSave = () => {
@@ -117,34 +119,33 @@ const EditDeleteCategoryModal = ({
         onCancel={onCancel}
         closable={true}
         footer={
-          mode === "edit"
-            ? [
-                <Button key="cancel" onClick={onCancel}>
-                  Cancel
-                </Button>,
-                <Button key="save" type="primary" onClick={handleSave}>
-                  Save
-                </Button>,
-              ]
-            : [
-                <div
-                  key="footer"
-                  className="w-full flex items-center justify-center gap-2"
-                >
-                  <Button key="cancel" onClick={onCancel}>
-                    Cancel
-                  </Button>
-                  <Button key="delete" type="primary" danger onClick={onDelete}>
-                    Delete
-                  </Button>
-                </div>,
-              ]
+          mode === "edit" ? (
+            [
+              <Button key="cancel" onClick={onCancel}>
+                Cancel
+              </Button>,
+              <Button key="save" type="primary" onClick={handleSave}>
+                Save
+              </Button>,
+            ]
+          ) : (
+            <div
+              key="footer"
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <Button key="cancel" onClick={onCancel}>
+                Cancel
+              </Button>
+              <Button key="delete" type="primary" danger onClick={onDelete}>
+                Delete
+              </Button>
+            </div>
+          )
         }
       >
         {mode === "edit" ? (
           <div>
             <div className="flex flex-col gap-1">
-              {/* Image Display/Upload */}
               {!isEditingImage ? (
                 <div className="flex justify-center relative">
                   <Image
@@ -162,24 +163,21 @@ const EditDeleteCategoryModal = ({
                   />
                 </div>
               ) : (
-                <div>
-                  <Upload
-                    listType="picture-card"
-                    fileList={fileList}
-                    onChange={handleUploadChange}
-                    beforeUpload={beforeUpload}
-                    maxCount={1}
-                  >
-                    {fileList.length < 1 && (
-                      <div className="w-full flex items-center justify-center">
-                        <div style={{ marginTop: 8 }}>Upload</div>
-                      </div>
-                    )}
-                  </Upload>
-                </div>
+                <Upload
+                  listType="picture-card"
+                  fileList={fileList}
+                  onChange={handleUploadChange}
+                  beforeUpload={beforeUpload}
+                  maxCount={1}
+                >
+                  {fileList.length < 1 && (
+                    <div className="w-full flex text-black items-center justify-center">
+                      <div style={{ marginTop: 8 }}>Upload</div>
+                    </div>
+                  )}
+                </Upload>
               )}
 
-              {/* Category Name Input */}
               <div className="mb-4">
                 <label className="block mb-2">Category Name</label>
                 <Input

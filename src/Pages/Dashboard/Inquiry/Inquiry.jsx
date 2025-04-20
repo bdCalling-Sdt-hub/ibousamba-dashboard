@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, ConfigProvider, Select, Spin, Alert } from "antd";
+import { Table, ConfigProvider, Spin, Alert } from "antd";
 import { IoEye } from "react-icons/io5";
 import InquiryDetailsModal from "./InquiryDetailsModal";
 import {
@@ -11,10 +11,11 @@ import InquiryDeleteModal from "./InquiryDeleteModal";
 import Loading from "../../../components/Loading";
 
 function Inquiry() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); // Track current page
   const { data: inquiries, isLoading, isError } = useInquiryQuery(page); // Fetch inquiries
 
   console.log("inquiries=", inquiries?.data?.result);
+
   const details = inquiries?.data?.result || []; // Ensure it's always an array
 
   if (isLoading) return <Loading />;
@@ -42,32 +43,15 @@ function Inquiry() {
       <div className="px-3">
         <div className="flex items-center gap-4">
           <p className="text-sm text-samba py-4">Latest Inquiry List:</p>
-          {/* <Select
-            placeholder="Select Category"
-            className="border rounded-lg"
-            style={{ width: 180 }}
-            onChange={(value) => console.log(`selected ${value}`)}
-            options={[
-              { value: "jack", label: "Jack" },
-              { value: "lucy", label: "Lucy" },
-              { value: "Yiminghe", label: "yiminghe" },
-            ]}
-          />
-          <Select
-            placeholder="Select Sub-Category"
-            className="border rounded-lg"
-            style={{ width: 220 }}
-            onChange={(value) => console.log(`selected ${value}`)}
-            options={[
-              { value: "jack", label: "Jack" },
-              { value: "lucy", label: "Lucy" },
-              { value: "Yiminghe", label: "yiminghe" },
-            ]}
-          /> */}
         </div>
-        {/* Passing details as a prop */}
         <div className="custom-table">
-          <InquiryTable inquiries={details} />
+          {/* Pass the 'setPage' and 'total' props to InquiryTable */}
+          <InquiryTable
+            inquiries={details}
+            setPage={setPage}
+            total={inquiries?.data?.meta?.total}
+            page={page}
+          />
         </div>
       </div>
     </ConfigProvider>
@@ -76,7 +60,7 @@ function Inquiry() {
 
 export default Inquiry;
 
-const InquiryTable = ({ inquiries }) => {
+const InquiryTable = ({ inquiries, setPage, total, page }) => {
   const [localInquiries, setLocalInquiries] = useState(inquiries);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -88,7 +72,6 @@ const InquiryTable = ({ inquiries }) => {
   }, [inquiries]);
 
   const showDetailsModal = (record) => {
-    console.log("Selected Inquiry:", record);
     setSelectedInquiry(record);
     setIsDetailsModalOpen(true);
   };
@@ -101,7 +84,6 @@ const InquiryTable = ({ inquiries }) => {
   const handleDelete = async () => {
     if (selectedInquiry?._id) {
       try {
-        console.log("Deleting inquiry with ID:", selectedInquiry._id);
         await deleteInquiry(selectedInquiry._id);
         setLocalInquiries((prev) =>
           prev.filter((inq) => inq._id !== selectedInquiry._id)
@@ -128,22 +110,19 @@ const InquiryTable = ({ inquiries }) => {
       title: "Inquiry Topics",
       dataIndex: "options",
       key: "options",
-      render: (_, record) => {
-        return (
-          <div className="flex flex-wrap gap-2">
-            {record.options.map((option, index) => (
-              <p
-                key={index}
-                className="border border-gray-300 rounded-lg px-1 py-.5  text-white"
-              >
-                {option}
-              </p>
-            ))}
-          </div>
-        );
-      },
+      render: (_, record) => (
+        <div className="flex flex-wrap gap-2">
+          {record.options.map((option, index) => (
+            <p
+              key={index}
+              className="border border-gray-300 rounded-lg px-1 py-.5 text-white"
+            >
+              {option}
+            </p>
+          ))}
+        </div>
+      ),
     },
-
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
     { title: "Your Inquiry", dataIndex: "description", key: "description" },
     {
@@ -199,18 +178,18 @@ const InquiryTable = ({ inquiries }) => {
           rowKey="_id"
           size="middle"
           pagination={{
-            onChange: (page) => setPage(page),
+            onChange: (page) => setPage(page), // Updates page when changing
+            current: page,
+            pageSize: 10,
+            total: total, // Total count of inquiries from API response
             showSizeChanger: false,
-            pageSize: inquiries?.meta?.page,
-            total: inquiries?.meta?.total,
-            showTotal: (total, range) => (
+            showTotal: (total) => (
               <span className="text-white">{`Total ${total} items`}</span>
             ),
           }}
         />
       </ConfigProvider>
 
-      {/* Inquiry Details Modal */}
       {/* Inquiry Details Modal */}
       <InquiryDetailsModal
         isModalOpen={isDetailsModalOpen}

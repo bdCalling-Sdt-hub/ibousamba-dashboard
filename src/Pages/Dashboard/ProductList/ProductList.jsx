@@ -185,6 +185,9 @@ function ProductList() {
               onChange: (page) => setPage(page),
               pageSize: data?.data?.meta?.limit,
               total: data?.data?.meta?.total,
+              showTotal: (total, range) => (
+                <span className="text-white">{`Total ${total} items`}</span>
+              ),
             }}
           />
         </div>

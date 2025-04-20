@@ -1,4 +1,4 @@
-import { Button, Form, Input, ConfigProvider, message } from "antd"; // ⬅️ import message
+import { Button, Form, Input, ConfigProvider, message } from "antd";
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ResetPasswordImg from "../../assets/samba/ResetPasswordImg.png";
@@ -12,9 +12,17 @@ const ResetPassword = () => {
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
   const onFinish = async (values) => {
+    const forgetOtpMatchToken = localStorage.getItem("forgetOtpMatchToken");
+
     if (!email) {
       console.error("Email is missing in URL");
-      message.error("Email is missing. Please try resetting again."); // ⬅️ Show error
+      message.error("Email is missing. Please try resetting again.");
+      return;
+    }
+
+    if (!forgetOtpMatchToken) {
+      message.error("Missing OTP token. Please verify your email again.");
+      navigate("/auth/forgot-password");
       return;
     }
 
@@ -25,14 +33,20 @@ const ResetPassword = () => {
         confirmPassword: values.confirmPassword,
       }).unwrap();
 
-      console.log("Password Reset Success:", response);
-      message.success("Password updated successfully! Please login."); // ⬅️ Show success
-      navigate(`/auth/login`);
+      if (response.success) {
+        console.log("Password Reset Success:", response);
+        message.success("Password updated successfully! Please login.");
+        localStorage.removeItem("forgetToken");
+        localStorage.removeItem("forgetOtpMatchToken");
+        navigate(`/auth/login`);
+      } else {
+        message.error("Password update failed.");
+      }
     } catch (err) {
       console.error("Reset Password Failed:", err);
       message.error(
         err?.data?.message || "Password reset failed. Please try again."
-      ); // ⬅️ Show error from server or fallback
+      );
     }
   };
 

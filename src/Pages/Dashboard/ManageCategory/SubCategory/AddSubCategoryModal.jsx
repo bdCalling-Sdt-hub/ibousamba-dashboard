@@ -18,7 +18,7 @@ const AddSubCategoryModal = ({ isModalOpen, handleClose }) => {
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
-  const { data } = useCategoryQuery();
+  const { data: categoryList } = useCategoryQuery();
   const [createSubCategory] = useCreateSubCategoryMutation();
   const [form] = Form.useForm(); // Ant Design Form instance
 
@@ -63,7 +63,24 @@ const AddSubCategoryModal = ({ isModalOpen, handleClose }) => {
 
   // Handle Image Upload Change
   const handleChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
+    const validFiles = newFileList.filter((file) => {
+      const isImage = file.type.startsWith("image/");
+      const isUnder5MB = file.size / 1024 / 1024 < 5;
+
+      if (!isImage) {
+        message.error(`${file.name} is not an image.`);
+        return false;
+      }
+
+      if (!isUnder5MB) {
+        message.error(`${file.name} is larger than 5MB.`);
+        return false;
+      }
+
+      return true;
+    });
+
+    setFileList(validFiles);
   };
 
   // Convert File to Base64
@@ -74,6 +91,24 @@ const AddSubCategoryModal = ({ isModalOpen, handleClose }) => {
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
+  };
+
+  // Validate image file type and size before upload
+  const beforeUpload = (file) => {
+    const isImage = file.type.startsWith("image/");
+    const isUnder5MB = file.size / 1024 / 1024 < 5;
+
+    if (!isImage) {
+      message.error("You can only upload image files!");
+      return Upload.LIST_IGNORE;
+    }
+
+    if (!isUnder5MB) {
+      message.error("Image must be smaller than 5MB!");
+      return Upload.LIST_IGNORE;
+    }
+
+    return false; // Prevent automatic upload
   };
 
   return (
@@ -120,7 +155,7 @@ const AddSubCategoryModal = ({ isModalOpen, handleClose }) => {
                 placeholder="Select Category"
                 onChange={(value) => form.setFieldsValue({ categoryId: value })}
               >
-                {data?.data?.map((category) => (
+                {categoryList?.data?.result?.map((category) => (
                   <Select.Option key={category._id} value={category._id}>
                     {category.name}
                   </Select.Option>
@@ -130,13 +165,21 @@ const AddSubCategoryModal = ({ isModalOpen, handleClose }) => {
           </Form.Item>
 
           {/* Image Upload */}
-          <Form.Item>
+          <Form.Item
+            name="image"
+            rules={[
+              {
+                required: true,
+                message: "Please upload an image (under 5MB).",
+              },
+            ]}
+          >
             <Upload
               listType="picture-card"
               fileList={fileList}
               onPreview={handlePreview}
               onChange={handleChange}
-              beforeUpload={() => false} // Prevent automatic upload
+              beforeUpload={beforeUpload}
             >
               {fileList.length >= 1 ? null : (
                 <div className="w-full flex items-center justify-center">

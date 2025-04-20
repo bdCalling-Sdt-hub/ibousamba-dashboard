@@ -54,15 +54,17 @@ const AddBrandModal = ({
     }
   };
 
-  // Validate file type
+  // Validate file type and size
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith("image/");
+    const isLt5MB = file.size / 1024 / 1024 < 5;
     if (!isImage) {
       message.error("You can only upload image files!");
     }
-
-    // Return false to prevent auto upload
-    return false;
+    if (!isLt5MB) {
+      message.error("Image must be smaller than 5MB!");
+    }
+    return isImage && isLt5MB ? false : Upload.LIST_IGNORE;
   };
 
   // Handle Form Submit

@@ -12,7 +12,7 @@ const Contact = () => {
   const [page, setPage] = useState(1);
 
   const { data: contactData, isLoading, isError } = useContactQuery(page);
-  console.log(contactData);
+  console.log(contactData?.data?.meta);
   // Extract inquiries from API response
   const inquiries = contactData?.data?.result || [];
 
@@ -91,11 +91,12 @@ const Contact = () => {
               dataSource={inquiries}
               rowKey="_id"
               pagination={{
-                onChange: (page) => setPage(page),
-                showSizeChanger: false,
-                pageSize: contactData?.meta?.page,
-                total: contactData?.meta?.total,
-                showTotal: (total, range) => (
+                current: page, // Set the current page to the state value
+                onChange: (page) => setPage(page), // Update page state when the page changes
+                showSizeChanger: false, // You can leave this false or customize if needed
+                pageSize: 10, // Define a fixed page size, can be dynamically fetched or set to 10
+                total: contactData?.data?.meta?.total || 0, // Total number of items, make sure it's defined
+                showTotal: (total) => (
                   <span className="text-white">{`Total ${total} items`}</span>
                 ),
               }}

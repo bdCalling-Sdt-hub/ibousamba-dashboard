@@ -100,7 +100,7 @@ const NotificationPopover = ({ onNotificationRead }) => {
           <>
             <div className="flex justify-between items-center px-4 py-2 border-b border-gray-700">
               <h3 className="text-white font-medium">Notifications</h3>
-              {displayedNotifications.some((item) => !item.read) && (
+              {displayedNotifications.some((item) => !item.isRead) && (
                 <Button
                   size="small"
                   onClick={handleReadAll}
@@ -126,7 +126,7 @@ const NotificationPopover = ({ onNotificationRead }) => {
                   key={item._id}
                   onClick={() => handleNotificationClick(item)}
                   className={`w-full min-h-16 flex items-start justify-between gap-3 p-3 my-1 rounded-md cursor-pointer hover:bg-gray-800 ${
-                    !item.read ? "border border-samba" : ""
+                    !item.isRead ? "border border-samba" : ""
                   }`}
                 >
                   <div className="flex items-start gap-3 flex-1">
@@ -146,7 +146,7 @@ const NotificationPopover = ({ onNotificationRead }) => {
                       <p className="text-gray-300 text-xs whitespace-pre-line">
                         {item.message}
                       </p>
-                      {item.read && (
+                      {item.isRead && (
                         <div className="flex items-center mt-1 text-xs text-green-800">
                           <CheckCircleOutlined className="mr-1" /> Read
                         </div>

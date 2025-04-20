@@ -17,6 +17,7 @@ import {
   useUpdateProductMutation,
 } from "../../../redux/apiSlices/productSlice";
 import { getImageUrl } from "../../../components/common/ImageUrl";
+import { TbWorldLatitude, TbWorldLongitude } from "react-icons/tb";
 
 function AddProductModal({
   isModalOpen,
@@ -50,6 +51,8 @@ function AddProductModal({
         productType: editingProduct.type,
         productPower: editingProduct.power,
         productDescription: editingProduct.description,
+        latitude: editingProduct.location?.coordinates?.[1],
+        longitude: editingProduct.location?.coordinates?.[0],
       });
 
       // Handle images if they exist
@@ -100,9 +103,9 @@ function AddProductModal({
     if (!isJpgOrPng) {
       message.error("You can only upload JPG/PNG file!");
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must be smaller than 2MB!");
+    const isLt5MB = file.size / 1024 / 1024 < 5;
+    if (!isLt5MB) {
+      message.error("Image must be smaller than 5MB!");
     }
     return false; // Prevent auto upload
   };
@@ -143,6 +146,28 @@ function AddProductModal({
       }
 
       formData.append("description", values.productDescription);
+
+      // Create location GeoJSON point object - send as separate fields for backend to handle properly
+      if (values.longitude && values.latitude) {
+        // const location = {
+        //   type: "Point",
+        //   coordinates: [
+        //     parseFloat(values.longitude), // Longitude first!
+        //     parseFloat(values.latitude),
+        //   ],
+        // };
+        // formData.append("location", JSON.stringify(location));
+        formData.append(
+          "location",
+          JSON.stringify({
+            type: "Ponit",
+            coordinates: [
+              parseFloat(values.longitude),
+              parseFloat(values.latitude),
+            ],
+          })
+        );
+      }
 
       // Append the uploaded images to FormData
       fileList.forEach((file) => {
@@ -260,7 +285,7 @@ function AddProductModal({
               <Form.Item
                 label="Category"
                 name="productCategory"
-                rules={[{ required: true, message: "Category required!" }]}
+                rules={[{ required: true, message: "Category is required!" }]}
               >
                 <Select
                   className="bg-[#1f1f1f] border-none h-12 text-slate-300 flex items-center rounded-md"
@@ -271,7 +296,7 @@ function AddProductModal({
                   value={selectedCategory}
                   onChange={handleCategoryChange}
                 >
-                  {categoryData?.data?.map((category) => (
+                  {categoryData?.data?.result?.map((category) => (
                     <Select.Option key={category._id} value={category._id}>
                       {category.name}
                     </Select.Option>
@@ -282,7 +307,9 @@ function AddProductModal({
               <Form.Item
                 label="Product Name"
                 name="productName"
-                rules={[{ required: true, message: "Product Name required!" }]}
+                rules={[
+                  { required: true, message: "Product Name is required!" },
+                ]}
               >
                 <Input
                   placeholder="Enter product name"
@@ -294,7 +321,7 @@ function AddProductModal({
                 label="Capacity"
                 name="productCapacity"
                 rules={[
-                  { required: true, message: "Product Capacity required!" },
+                  { required: true, message: "Product Capacity is required!" },
                 ]}
               >
                 <Input
@@ -306,7 +333,9 @@ function AddProductModal({
               <Form.Item
                 label="Model"
                 name="productModel"
-                rules={[{ required: true, message: "Product Model required!" }]}
+                rules={[
+                  { required: true, message: "Product Model is required!" },
+                ]}
               >
                 <Input
                   placeholder="Enter product model"
@@ -317,7 +346,9 @@ function AddProductModal({
               <Form.Item
                 label="Type"
                 name="productType"
-                rules={[{ required: true, message: "Product Type required!" }]}
+                rules={[
+                  { required: true, message: "Product Type is required!" },
+                ]}
               >
                 <Input
                   placeholder="Enter product type"
@@ -325,7 +356,13 @@ function AddProductModal({
                 />
               </Form.Item>
 
-              <Form.Item label="Power" name="productPower">
+              <Form.Item
+                label="Power"
+                name="productPower"
+                rules={[
+                  { required: true, message: "Product Power is required!" },
+                ]}
+              >
                 <Input
                   placeholder="Enter product power"
                   className="bg-[#1f1f1f] border-none h-12 text-slate-300"
@@ -337,7 +374,9 @@ function AddProductModal({
               <Form.Item
                 label="Sub-category"
                 name="productSubCategory"
-                rules={[{ required: true, message: "Sub-category required!" }]}
+                rules={[
+                  { required: true, message: "Sub-category is required!" },
+                ]}
               >
                 <Select
                   className="bg-[#1f1f1f] border-none h-12 text-slate-300 flex items-center rounded-md"
@@ -350,7 +389,7 @@ function AddProductModal({
                   disabled={isSubCategoryLoading || !categoryID}
                   loading={isSubCategoryLoading}
                 >
-                  {subCategoryData?.data?.map((subCategory) => (
+                  {subCategoryData?.data?.result?.map((subCategory) => (
                     <Select.Option
                       key={subCategory._id}
                       value={subCategory._id}
@@ -364,7 +403,9 @@ function AddProductModal({
               <Form.Item
                 label="Product Price"
                 name="productPrice"
-                rules={[{ required: true, message: "Product Price required!" }]}
+                rules={[
+                  { required: true, message: "Product Price is required!" },
+                ]}
               >
                 <Input
                   placeholder="Enter product price"
@@ -374,12 +415,56 @@ function AddProductModal({
                   }
                 />
               </Form.Item>
-
+              <div className="w-full flex  gap-2">
+                <Form.Item
+                  label={
+                    <p className="flex items-center gap-2">
+                      Latitude
+                      <TbWorldLatitude />
+                    </p>
+                  }
+                  name="latitude"
+                  rules={[{ required: true, message: "Latitude is required!" }]}
+                  className="w-full"
+                >
+                  <Input
+                    placeholder="Enter Latitude"
+                    className="bg-[#1f1f1f] border-none h-12 w-full text-slate-300"
+                    onInput={(e) =>
+                      (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <p className="flex items-center gap-2">
+                      Longitude
+                      <TbWorldLongitude />
+                    </p>
+                  }
+                  name="longitude"
+                  rules={[
+                    { required: true, message: "Longitude is required!" },
+                  ]}
+                  className="w-full"
+                >
+                  <Input
+                    placeholder="Enter longitude"
+                    className="bg-[#1f1f1f] border-none h-12 w-full text-slate-300"
+                    onInput={(e) =>
+                      (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
+                    }
+                  />
+                </Form.Item>
+              </div>
               <Form.Item
                 label="Product Description"
                 name="productDescription"
                 rules={[
-                  { required: true, message: "Product Description required!" },
+                  {
+                    required: true,
+                    message: "Product Description is required!",
+                  },
                 ]}
               >
                 <Input.TextArea
@@ -387,7 +472,7 @@ function AddProductModal({
                   className="border-none text-slate-300"
                   style={{
                     resize: "none",
-                    height: "175px",
+                    height: "100px",
                     overflowY: "scroll",
                     scrollbarWidth: "none",
                   }}
@@ -405,7 +490,7 @@ function AddProductModal({
                 ]}
               >
                 <Upload
-                  listType="picture-card"
+                  listType="picture-circle"
                   fileList={fileList}
                   onChange={handleChange}
                   showUploadList={true}

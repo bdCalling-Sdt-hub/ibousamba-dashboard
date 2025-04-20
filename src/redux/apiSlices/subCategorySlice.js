@@ -26,8 +26,8 @@ const subCategorySlice = api.injectEndpoints({
       invalidatesTags: ["SubCategory"],
     }),
     getSubCategories: builder.query({
-      query: (categoryID) => ({
-        url: `/sub-category/${categoryID}`,
+      query: (categoryID, page) => ({
+        url: `/sub-category/${categoryID}?page=${page}`,
         method: "GET",
       }),
       providesTags: ["SubCategory"],
