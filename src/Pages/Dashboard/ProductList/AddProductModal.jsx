@@ -139,7 +139,7 @@ function AddProductModal({
       formData.append("price", values.productPrice);
       formData.append("capacity", values.productCapacity);
       formData.append("model", values.productModel);
-      formData.append("type", values.productType);
+      // formData.append("type", values.productType);
 
       if (values.productPower) {
         formData.append("power", values.productPower);
@@ -316,7 +316,21 @@ function AddProductModal({
                   className="bg-[#1f1f1f] border-none h-12 text-slate-300"
                 />
               </Form.Item>
-
+              <Form.Item
+                label="Product Price"
+                name="productPrice"
+                rules={[
+                  { required: true, message: "Product Price is required!" },
+                ]}
+              >
+                <Input
+                  placeholder="Enter product price"
+                  className="bg-[#1f1f1f] border-none h-12 text-slate-300"
+                  onInput={(e) =>
+                    (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
+                  }
+                />
+              </Form.Item>
               <Form.Item
                 label="Capacity"
                 name="productCapacity"
@@ -343,7 +357,7 @@ function AddProductModal({
                 />
               </Form.Item>
 
-              <Form.Item
+              {/* <Form.Item
                 label="Type"
                 name="productType"
                 rules={[
@@ -354,7 +368,7 @@ function AddProductModal({
                   placeholder="Enter product type"
                   className="bg-[#1f1f1f] border-none h-12 text-slate-300"
                 />
-              </Form.Item>
+              </Form.Item> */}
 
               <Form.Item
                 label="Power"
@@ -400,21 +414,6 @@ function AddProductModal({
                 </Select>
               </Form.Item>
 
-              <Form.Item
-                label="Product Price"
-                name="productPrice"
-                rules={[
-                  { required: true, message: "Product Price is required!" },
-                ]}
-              >
-                <Input
-                  placeholder="Enter product price"
-                  className="bg-[#1f1f1f] border-none h-12 text-slate-300"
-                  onInput={(e) =>
-                    (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
-                  }
-                />
-              </Form.Item>
               <div className="w-full flex  gap-2">
                 <Form.Item
                   label={
@@ -472,7 +471,7 @@ function AddProductModal({
                   className="border-none text-slate-300"
                   style={{
                     resize: "none",
-                    height: "100px",
+                    height: "175px",
                     overflowY: "scroll",
                     scrollbarWidth: "none",
                   }}

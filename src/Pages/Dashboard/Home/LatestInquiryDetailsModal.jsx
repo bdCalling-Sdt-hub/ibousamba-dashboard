@@ -10,6 +10,7 @@ const LatestInquiryDetailsModal = ({
     <Modal
       title="Inquiry Details"
       open={isModalOpen}
+      width={1000}
       onCancel={() => setIsModalOpen(false)}
       footer={null}
     >
@@ -28,16 +29,13 @@ const LatestInquiryDetailsModal = ({
             {inquiryData.options?.join(", ") || "N/A"}
           </Descriptions.Item>
           <Descriptions.Item label="Description">
-            {inquiryData.description}
+            <div className="w-full max-h-20 overflow-auto">
+              {inquiryData.description}
+            </div>
           </Descriptions.Item>
-          <Descriptions.Item label="Status">
-            {inquiryData.status ? "Active" : "Inactive"}
-          </Descriptions.Item>
+
           <Descriptions.Item label="Created At">
             {new Date(inquiryData.createdAt).toLocaleString()}
-          </Descriptions.Item>
-          <Descriptions.Item label="Updated At">
-            {new Date(inquiryData.updatedAt).toLocaleString()}
           </Descriptions.Item>
         </Descriptions>
       ) : (

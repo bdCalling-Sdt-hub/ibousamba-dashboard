@@ -3,6 +3,7 @@ import { Table, ConfigProvider } from "antd";
 import { IoEye } from "react-icons/io5";
 import { useInquiryQuery } from "../../../redux/apiSlices/inquirySlice";
 import LatestInquiryDetailsModal from "./LatestInquiryDetailsModal";
+import { render } from "react-dom";
 
 function LatestInquiryList() {
   const { data: latestInquiry } = useInquiryQuery();
@@ -23,7 +24,18 @@ function LatestInquiryList() {
     },
     { title: "Full Name", dataIndex: "fullName", key: "fullName" },
     { title: "User Email", dataIndex: "email", key: "email" },
-    { title: "Inquiry Topics", dataIndex: "description", key: "description" },
+    {
+      title: "Inquiry Topics",
+      dataIndex: "description",
+      key: "description",
+      render: (text) => {
+        return (
+          <span className="inline-block max-w-[220px] whitespace-nowrap overflow-hidden text-ellipsis">
+            {text}
+          </span>
+        );
+      },
+    },
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
     {
       title: "Date",
