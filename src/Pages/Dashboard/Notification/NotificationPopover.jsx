@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Spin, Tag, Button, ConfigProvider } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
@@ -12,9 +12,9 @@ import {
   useReadMutation,
 } from "../../../redux/apiSlices/notificationSlice";
 
-const NotificationPopover = ({ onNotificationRead }) => {
+const NotificationPopover = ({ onNotificationRead, notifications }) => {
   const {
-    data: notifications,
+    data: notificationdata,
     refetch,
     isLoading: notificationLoading,
   } = useNotificationQuery();
@@ -23,7 +23,14 @@ const NotificationPopover = ({ onNotificationRead }) => {
   const [readAllNotifications, { isLoading: readAllLoading }] =
     useReadAllMutation();
 
-  const displayedNotifications = notifications?.data?.result || [];
+  // Effect to refetch when socket notifications change
+  useEffect(() => {
+    if (notifications && notifications.length > 0) {
+      refetch();
+    }
+  }, [notifications, refetch]);
+
+  const displayedNotifications = notificationdata?.data?.result || [];
 
   const formatTime = (timestamp) =>
     timestamp ? moment(timestamp).fromNow() : "Just now";

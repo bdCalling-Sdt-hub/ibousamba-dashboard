@@ -14,7 +14,7 @@ function Inquiry() {
   const [page, setPage] = useState(1); // Track current page
   const { data: inquiries, isLoading, isError } = useInquiryQuery(page); // Fetch inquiries
 
-  console.log("inquiries=", inquiries?.data?.result);
+  // console.log("inquiries=", inquiries?.data?.result);
 
   const details = inquiries?.data?.result || []; // Ensure it's always an array
 

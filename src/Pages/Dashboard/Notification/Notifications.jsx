@@ -1,43 +1,30 @@
 import React, { useState } from "react";
 import { Button, ConfigProvider, Pagination } from "antd";
-import {
-  useNotificationQuery,
-  useReadMutation,
-} from "../../../redux/apiSlices/notificationSlice";
-import toast from "react-hot-toast";
+import { useNotificationQuery } from "../../../redux/apiSlices/notificationSlice";
+
 import { FaRegBell } from "react-icons/fa";
+import Loading from "../../../components/Loading";
 
 const Notifications = () => {
   const [page, setPage] = useState(1);
   const limit = 10; // match the backend default or make it dynamic later if needed
 
-  const { data: notifications, isFetching } = useNotificationQuery({ page });
-  const [read] = useReadMutation();
-
-  const handleRead = async () => {
-    try {
-      const { status, message } = await read().unwrap();
-      if (status) {
-        toast.success(message);
-      }
-    } catch (error) {
-      toast.error(error?.data?.message || "Something went wrong");
-    }
-  };
+  const {
+    data: notifications,
+    isLoading,
+    isError,
+  } = useNotificationQuery({ page });
 
   const results = notifications?.data?.result || [];
   const meta = notifications?.data?.meta;
 
+  if (isLoading) return <Loading />;
+  if (isError)
+    return <Alert message="Failed to load Notifications!" type="error" />;
   return (
     <div className="px-4">
       <div className="flex items-center justify-between mb-1 text-white">
-        <h2 className="text-[22px]">All Notifications</h2>
-        <button
-          className="bg-gtdandy h-10 px-4 rounded-md"
-          onClick={handleRead}
-        >
-          Read All
-        </button>
+        <h2 className="text-[22px] mb-2">All Notifications</h2>
       </div>
 
       <div className="grid grid-cols-1 gap-2">
