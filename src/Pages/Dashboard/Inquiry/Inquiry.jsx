@@ -124,7 +124,18 @@ const InquiryTable = ({ inquiries, setPage, total, page }) => {
       ),
     },
     { title: "Phone Number", dataIndex: "phone", key: "phone" },
-    { title: "Your Inquiry", dataIndex: "description", key: "description" },
+    {
+      title: "Your Inquiry",
+      dataIndex: "description",
+      key: "description",
+      render: (text) => {
+        return (
+          <span className="inline-block max-w-[220px] whitespace-nowrap overflow-hidden text-ellipsis">
+            {text}
+          </span>
+        );
+      },
+    },
     {
       title: "Action",
       key: "action",

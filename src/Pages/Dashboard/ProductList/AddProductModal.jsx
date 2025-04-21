@@ -149,18 +149,10 @@ function AddProductModal({
 
       // Create location GeoJSON point object - send as separate fields for backend to handle properly
       if (values.longitude && values.latitude) {
-        // const location = {
-        //   type: "Point",
-        //   coordinates: [
-        //     parseFloat(values.longitude), // Longitude first!
-        //     parseFloat(values.latitude),
-        //   ],
-        // };
-        // formData.append("location", JSON.stringify(location));
         formData.append(
           "location",
           JSON.stringify({
-            type: "Ponit",
+            // type: "Ponit",
             coordinates: [
               parseFloat(values.longitude),
               parseFloat(values.latitude),
