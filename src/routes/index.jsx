@@ -9,7 +9,6 @@ import VerifyOtp from "../Pages/Auth/VerifyOtp";
 import ResetPassword from "../Pages/Auth/ResetPassword";
 import NotFound from "../NotFound";
 
-import AdminProfile from "../Pages/Dashboard/AdminProfile/AdminProfile";
 import Setting from "../Pages/Dashboard/Setting/Setting.jsx";
 
 // import OrderDetails from "../Pages/Dashboard/OrderDetails/OrderDetails.jsx";
@@ -77,10 +76,7 @@ const router = createBrowserRouter([
         path: "/privacy-policy",
         element: <PrivacyPolicy />,
       },
-      {
-        path: "/profile",
-        element: <AdminProfile />,
-      },
+
       {
         path: "/all-brands",
         element: <Brands />,

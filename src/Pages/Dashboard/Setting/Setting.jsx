@@ -3,9 +3,6 @@ import { Tabs, ConfigProvider } from "antd";
 import AdminPassword from "./AdminPassword";
 import Profile from "./Profile";
 
-const onChange = (key) => {
-  console.log(key);
-};
 const items = [
   {
     key: "password",
@@ -39,7 +36,6 @@ function Setting() {
       <Tabs
         defaultActiveKey="1"
         items={items}
-        onChange={onChange}
         className="px-4 py-5 font-medium "
       />
     </ConfigProvider>

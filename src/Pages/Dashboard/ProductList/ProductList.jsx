@@ -81,7 +81,7 @@ function ProductList() {
       console.error("Error deleting product:", err);
     }
   };
-  console.log(data?.data?.result);
+  // console.log(data?.data?.result);
 
   const showDeleteModal = (product) => {
     if (!product || !product._id) {
@@ -112,8 +112,6 @@ function ProductList() {
     ...item,
     serial: `#${item.serial}`,
   }));
-
-  console.log(page);
 
   return (
     <div className="px-3 py-4">

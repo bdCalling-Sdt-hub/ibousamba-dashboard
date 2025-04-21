@@ -127,15 +127,15 @@ const ProfileDetails = ({
       }
 
       // Log FormData for debugging
-      console.log("FORM DATA CONTENTS:");
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      // console.log("FORM DATA CONTENTS:");
+      // for (const pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
 
       // Important: Match the API structure - pass { data: formData }
       const response = await updateProfile({ data: formData }).unwrap();
 
-      console.log("Profile update response:", response);
+      // console.log("Profile update response:", response);
 
       if (response.success) {
         message.success("Profile updated successfully");

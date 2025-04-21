@@ -46,7 +46,7 @@ function OrderDetailsModal({ isModalOpen, setIsModalOpen, data }) {
             <div className="flex gap-4 items-center text-white">
               <h3>
                 Orders ID: {data?.serial}
-                {console.log(data)}
+                {/* {console.log(data)} */}
               </h3>
               <div
                 className={`${

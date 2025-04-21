@@ -16,16 +16,17 @@ const Login = () => {
         password: values.password,
       }).unwrap();
 
-      console.log("Login Success:", response);
+      // console.log("Login Success:", response);
 
       // Save token
       localStorage.setItem("token", JSON.stringify(response.data.accessToken));
 
       // Show success message
       message.success("Login Successful!");
-
-      // Navigate to homepage
-      navigate("/");
+      if (localStorage.getItem("token") && response.success) {
+        // Navigate to homepage
+        navigate("/");
+      }
     } catch (err) {
       console.error("Login Failed:", err);
 

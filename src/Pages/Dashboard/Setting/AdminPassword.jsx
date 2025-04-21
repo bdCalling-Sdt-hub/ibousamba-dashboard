@@ -23,14 +23,11 @@ function AdminPassword() {
         confirmPassword: values.confirmPassword.trim(),
       };
 
-      console.log("Password Updated:", trimmedValues);
-
       const response = await changePassword({
         oldPassword: trimmedValues.currentPassword,
         newPassword: trimmedValues.newPassword,
       });
 
-      console.log(response);
       if (response.data.success) {
         navigate(`/auth/login`);
       } else {

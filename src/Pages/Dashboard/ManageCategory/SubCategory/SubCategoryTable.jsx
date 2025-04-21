@@ -58,9 +58,9 @@ const SubCategoryTable = ({ categoryID }) => {
     if (!currentRecord) return;
 
     // Log FormData contents
-    for (let pair of formData.entries()) {
-      console.log("sss", pair[0], pair[1]);
-    }
+    // for (let pair of formData.entries()) {
+    //   console.log("sss", pair[0], pair[1]);
+    // }
 
     try {
       const response = await updateSubCategory({
@@ -72,7 +72,7 @@ const SubCategoryTable = ({ categoryID }) => {
         message.success("Sub-Category updated successfully");
       }
 
-      console.log("Sub-Category Updated Response:", response);
+      // console.log("Sub-Category Updated Response:", response);
       setIsModalVisible(false);
     } catch (err) {
       console.error("Error updating subcategory:", err);
@@ -122,7 +122,7 @@ const SubCategoryTable = ({ categoryID }) => {
     },
   ];
   const openEditModal = (record) => {
-    console.log("Opening Edit Modal with record:", record); // Check if record has category and image
+    // console.log("Opening Edit Modal with record:", record); // Check if record has category and image
     setModalMode("edit");
     setCurrentRecord(record);
     setIsModalVisible(true);

@@ -21,22 +21,22 @@ const VerifyOtp = () => {
     useForgotPasswordMutation();
 
   const handleOtpChange = (value) => {
-    console.log("Current OTP input:", value);
+    // console.log("Current OTP input:", value);
     setOtp(value);
   };
 
   const onFinish = async () => {
-    console.log("Raw OTP string:", otp);
+    // console.log("Raw OTP string:", otp);
 
     if (otp.length !== 6) {
-      console.error("OTP must be 6 digits");
+      // console.error("OTP must be 6 digits");
       message.error("OTP must be exactly 6 digits"); // <-- ADD error message
       return;
     }
 
     try {
       const response = await otpVerify({ otp }).unwrap();
-      console.log("OTP Verification Success:", response);
+      // console.log("OTP Verification Success:", response);
 
       localStorage.setItem(
         "forgetOtpMatchToken",
@@ -55,18 +55,18 @@ const VerifyOtp = () => {
 
   const handleResendEmail = async () => {
     if (!email) {
-      console.error("Email is missing. Cannot resend OTP.");
+      // console.error("Email is missing. Cannot resend OTP.");
       message.error("Email not found. Please try again."); // <-- ADD error message
       return;
     }
 
     try {
       const resendOTP = await forgotPassword({ email }).unwrap();
-      console.log("OTP Resent Successfully");
-      console.log("Resend OTP Response:", resendOTP);
+      // console.log("OTP Resent Successfully");
+      // console.log("Resend OTP Response:", resendOTP);
       message.info("OTP Resent to your email."); // <-- ADD info message
     } catch (err) {
-      console.error("OTP Resend Failed:", err);
+      // console.error("OTP Resend Failed:", err);
       message.error(err?.data?.message || "Failed to resend OTP"); // <-- ADD error message
     }
   };

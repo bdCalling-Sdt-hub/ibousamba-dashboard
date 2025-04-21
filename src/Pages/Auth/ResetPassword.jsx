@@ -34,7 +34,7 @@ const ResetPassword = () => {
       }).unwrap();
 
       if (response.success) {
-        console.log("Password Reset Success:", response);
+        // console.log("Password Reset Success:", response);
         message.success("Password updated successfully! Please login.");
         localStorage.removeItem("forgetToken");
         localStorage.removeItem("forgetOtpMatchToken");

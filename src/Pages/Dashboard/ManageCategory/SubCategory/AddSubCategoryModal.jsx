@@ -34,14 +34,14 @@ const AddSubCategoryModal = ({ isModalOpen, handleClose }) => {
     }
 
     // Log FormData contents
-    for (const pair of formData.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+    // for (const pair of formData.entries()) {
+    //   console.log(`${pair[0]}:`, pair[1]);
+    // }
 
     // Send the FormData to the API
     createSubCategory(formData)
       .then((response) => {
-        console.log("API Response:", response);
+        // console.log("API Response:", response);
         message.success("Subcategory created successfully!");
         form.resetFields(); // Reset form on success
         setFileList([]); // Clear uploaded images

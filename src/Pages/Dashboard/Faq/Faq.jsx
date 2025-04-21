@@ -45,7 +45,7 @@ function Faq() {
           },
         }).unwrap();
 
-        console.log("Update FAQ Success:", response);
+        // console.log("Update FAQ Success:", response);
 
         // Update FAQ in state
         setFaqs((prevFaqs) =>
@@ -60,7 +60,7 @@ function Faq() {
           description: faq.description,
         }).unwrap();
 
-        console.log("Create FAQ Success:", response);
+        // console.log("Create FAQ Success:", response);
 
         // Add new FAQ to state
         if (response.data) {
@@ -95,8 +95,8 @@ function Faq() {
   const confirmDelete = async () => {
     try {
       const response = await deleteFaq(deleteFaqId).unwrap();
-      console.log("Deleting FAQ with id:", deleteFaqId);
-      console.log(response);
+      // console.log("Deleting FAQ with id:", deleteFaqId);
+      // console.log(response);
       // Remove the deleted FAQ from state
       setFaqs((prevFaqs) => prevFaqs.filter((faq) => faq._id !== deleteFaqId));
 
@@ -138,7 +138,6 @@ function Faq() {
   if (isLoading) return <Loading />;
 
   // Error state
-  console.log(isError);
   if (isError) return <Error msg={"Error"} />;
 
   return (

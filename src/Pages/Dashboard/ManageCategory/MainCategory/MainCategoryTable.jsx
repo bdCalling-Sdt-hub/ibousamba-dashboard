@@ -21,7 +21,7 @@ const MainCategoryTable = () => {
   const { data: categoryList, isLoading: isCategoryLoading } =
     useCategoryQuery(page);
 
-  console.log(categoryList?.data?.result);
+  // console.log(categoryList?.data?.result);
 
   const [deleteCategory] = useDeleteCategoryMutation();
   const [updateCategory, { isLoading }] = useUpdateCategoryMutation();
@@ -40,7 +40,7 @@ const MainCategoryTable = () => {
     try {
       const response = await deleteCategory(currentRecord._id);
       message.success(`Successfully deleted`);
-      console.log("Category Deletion Response:", response);
+      // console.log("Category Deletion Response:", response);
       setIsModalVisible(false);
       setCurrentRecord(null); // Clear the current record after deletion
     } catch (err) {
@@ -69,7 +69,7 @@ const MainCategoryTable = () => {
       }).unwrap();
 
       message.success("Successfully updated category");
-      console.log("Category Update Response:", response);
+      // console.log("Category Update Response:", response);
       setIsModalVisible(false);
       setCurrentRecord(null);
     } catch (err) {

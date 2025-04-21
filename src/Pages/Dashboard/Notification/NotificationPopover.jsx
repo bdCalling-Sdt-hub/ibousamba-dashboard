@@ -66,7 +66,7 @@ const NotificationPopover = ({ onNotificationRead, notifications }) => {
 
   const removeMessage = (id) => {
     // Implement delete functionality if needed
-    console.log("Delete notification:", id);
+    // console.log("Delete notification:", id);
   };
 
   const handleReadAll = async () => {

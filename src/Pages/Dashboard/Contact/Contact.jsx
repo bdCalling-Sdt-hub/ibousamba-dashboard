@@ -12,7 +12,7 @@ const Contact = () => {
   const [page, setPage] = useState(1);
 
   const { data: contactData, isLoading, isError } = useContactQuery(page);
-  console.log(contactData?.data?.meta);
+  // console.log(contactData?.data?.meta);
   // Extract inquiries from API response
   const inquiries = contactData?.data?.result || [];
 

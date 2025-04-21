@@ -9,10 +9,10 @@ const ForgotPassword = () => {
   const [forgotPassword, { isLoading, error }] = useForgotPasswordMutation();
 
   const onFinish = async (values) => {
-    console.log("Submitting email:", values.email);
+    // console.log("Submitting email:", values.email);
     try {
       const response = await forgotPassword({ email: values.email }).unwrap();
-      console.log("Forgot Password Success:", response);
+      // console.log("Forgot Password Success:", response);
       localStorage.setItem("forgetToken", response?.data?.forgetToken);
       navigate(`/auth/verify-otp?email=${values.email}`);
     } catch (err) {

@@ -181,18 +181,18 @@ function AddProductModal({
       }
 
       // Log all form data
-      console.log("Form values:", values);
-      console.log("File list:", fileList);
+      // console.log("Form values:", values);
+      // console.log("File list:", fileList);
 
       // Display all FormData entries
-      console.log("FormData entries:");
-      for (let [key, value] of formData.entries()) {
-        if (key === "images") {
-          console.log(key, ":", value.name);
-        } else {
-          console.log(key, ":", value);
-        }
-      }
+      // console.log("FormData entries:");
+      // for (let [key, value] of formData.entries()) {
+      //   if (key === "images") {
+      //     console.log(key, ":", value.name);
+      //   } else {
+      //     console.log(key, ":", value);
+      //   }
+      // }
 
       // Call the appropriate mutation based on whether we're editing or adding
       let response;

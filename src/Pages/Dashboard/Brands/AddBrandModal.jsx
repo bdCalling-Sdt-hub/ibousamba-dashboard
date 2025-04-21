@@ -86,7 +86,7 @@ const AddBrandModal = ({
         existingImage: initialBrand?.image || null, // Send existing image if available
       };
 
-      console.log("Form data on save:", brandData);
+      // console.log("Form data on save:", brandData);
       handleSave(brandData);
     } catch (error) {
       console.error("Form submission error:", error);

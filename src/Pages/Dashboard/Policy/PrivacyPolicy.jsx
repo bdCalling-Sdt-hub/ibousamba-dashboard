@@ -35,14 +35,14 @@ function PrivacyPolicy() {
       return;
     }
 
-    console.log(content);
+    // console.log(content);
 
     try {
       const result = await updatePolicy({
         privacyPolicy: content,
         policy: "privacyPolicy",
       }).unwrap();
-      console.log(result);
+      // console.log(result);
       message.success("Privacy policy updated successfully!");
     } catch (err) {
       message.error(
