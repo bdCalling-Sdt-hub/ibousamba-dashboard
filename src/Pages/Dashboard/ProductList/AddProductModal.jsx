@@ -18,6 +18,7 @@ import {
 } from "../../../redux/apiSlices/productSlice";
 import { getImageUrl } from "../../../components/common/ImageUrl";
 import { TbWorldLatitude, TbWorldLongitude } from "react-icons/tb";
+import { useGetLocQuery } from "../../../redux/apiSlices/locApi";
 
 function AddProductModal({
   isModalOpen,
@@ -131,7 +132,12 @@ function AddProductModal({
     try {
       // Create a new FormData object
       const formData = new FormData();
-
+      // const {
+      //   data: loc,
+      //   isLoading,
+      //   isError,
+      // } = useGetLocQuery(values.longitude, values.latitude);
+      // console.log(loc);
       // Append form fields to FormData
       formData.append("name", values.productName);
       formData.append("categoryId", values.productCategory);
@@ -152,7 +158,7 @@ function AddProductModal({
         formData.append(
           "location",
           JSON.stringify({
-            // type: "Ponit",
+            type: "Point",
             coordinates: [
               parseFloat(values.longitude),
               parseFloat(values.latitude),
@@ -185,14 +191,14 @@ function AddProductModal({
       // console.log("File list:", fileList);
 
       // Display all FormData entries
-      // console.log("FormData entries:");
-      // for (let [key, value] of formData.entries()) {
-      //   if (key === "images") {
-      //     console.log(key, ":", value.name);
-      //   } else {
-      //     console.log(key, ":", value);
-      //   }
-      // }
+      console.log("FormData entries:");
+      for (let [key, value] of formData.entries()) {
+        if (key === "images") {
+          console.log(key, ":", value.name);
+        } else {
+          console.log(key, ":", value);
+        }
+      }
 
       // Call the appropriate mutation based on whether we're editing or adding
       let response;
@@ -349,19 +355,6 @@ function AddProductModal({
                 />
               </Form.Item>
 
-              {/* <Form.Item
-                label="Type"
-                name="productType"
-                rules={[
-                  { required: true, message: "Product Type is required!" },
-                ]}
-              >
-                <Input
-                  placeholder="Enter product type"
-                  className="bg-[#1f1f1f] border-none h-12 text-slate-300"
-                />
-              </Form.Item> */}
-
               <Form.Item
                 label="Power"
                 name="productPower"
@@ -421,9 +414,9 @@ function AddProductModal({
                   <Input
                     placeholder="Enter Latitude"
                     className="bg-[#1f1f1f] border-none h-12 w-full text-slate-300"
-                    onInput={(e) =>
-                      (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
-                    }
+                    // onInput={(e) =>
+                    //   (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
+                    // }
                   />
                 </Form.Item>
                 <Form.Item
@@ -442,9 +435,9 @@ function AddProductModal({
                   <Input
                     placeholder="Enter longitude"
                     className="bg-[#1f1f1f] border-none h-12 w-full text-slate-300"
-                    onInput={(e) =>
-                      (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
-                    }
+                    // onInput={(e) =>
+                    //   (e.target.value = e.target.value.replace(/[^0-9.]/g, ""))
+                    // }
                   />
                 </Form.Item>
               </div>
