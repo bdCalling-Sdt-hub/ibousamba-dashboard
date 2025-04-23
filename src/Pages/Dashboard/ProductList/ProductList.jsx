@@ -222,9 +222,8 @@ const columns = (showEditModal, showDeleteModal) => [
     render: (_, record) => {
       return (
         <div className="flex items-center gap-2">
-          <Avatar
-            shape="square"
-            size="default"
+          <img
+            width={20}
             src={getImageUrl(record?.images[0])}
             alt={record.name}
             onError={(e) => {

@@ -16,7 +16,8 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-export const imageUrl = "http://10.0.60.36:8011/";
+// export const imageUrl = "http://10.0.60.36:8011/";
+export const imageUrl = "https://sohag500.binarybards.online";
 
 export const api = createApi({
   baseQuery,
