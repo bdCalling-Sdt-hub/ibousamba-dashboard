@@ -43,7 +43,8 @@ const Header = ({ toggleSidebar }) => {
         }
 
         // Create new socket connection
-        socketRef.current = io("http://10.0.60.36:6011", {
+        // socketRef.current = io("https://sohag500.binarybards.online", {
+        socketRef.current = io("http://10.0.60.36:5003", {
           auth: {
             token: token,
           },

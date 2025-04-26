@@ -7,6 +7,7 @@ export const getImageUrl = (path) => {
     return strPath;
   } else {
     const baseUrl = "https://sohag500.binarybards.online/";
+    // const baseUrl = "http://10.0.60.36:5000/";
     // const baseUrl = getBaseUrl();
     return `${baseUrl}${strPath.startsWith("/") ? strPath.slice(1) : strPath}`;
   }

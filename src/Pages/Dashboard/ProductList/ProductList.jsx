@@ -11,6 +11,7 @@ import {
 } from "../../../redux/apiSlices/productSlice";
 import { imageUrl } from "../../../redux/api/baseApi";
 import { getImageUrl } from "../../../components/common/ImageUrl";
+import { useBrandQuery } from "../../../redux/apiSlices/brandSlice";
 
 function ProductList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,9 +21,19 @@ function ProductList() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [brandImage, setBrandImage] = useState({});
 
   // Fetch products using the useProductQuery hook
   const { data, isLoading, isError, error } = useProductQuery(page);
+
+  console.log(data?.data?.result);
+
+  useEffect(() => {
+    const brandIds = data?.data?.result?.map((product) => product.brand) ?? [];
+    console.log(brandIds);
+  }, []);
+
+  // const brandImage = d
 
   // Add a delete mutation hook
   const [deleteProduct] = useDeleteProductMutation();
@@ -235,6 +246,20 @@ const columns = (showEditModal, showDeleteModal) => [
       );
     },
   },
+
+  {
+    title: "Brand",
+    dataIndex: "brand",
+    key: "brand",
+    render: (_, record) => {
+      return (
+        <div className="flex items-center gap-2">
+          <span>{record?.brand?.name}</span>
+        </div>
+      );
+    },
+  },
+
   {
     title: "Price",
     dataIndex: "price",

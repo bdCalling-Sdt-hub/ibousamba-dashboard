@@ -77,6 +77,7 @@ function Brands() {
 
       // Prepare form data
       formdata.append("brandUrl", brandData.brandUrl);
+      formdata.append("name", brandData.name);
 
       // Only append image if a new one is provided
       if (brandData.imageFile) {

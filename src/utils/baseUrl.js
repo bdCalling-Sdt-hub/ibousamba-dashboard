@@ -9,5 +9,6 @@
 // export default getBaseUrl;
 
 export const getBaseUrl = () => {
-  return "https://sohag500.binarybards.online/api/v1";
+  return "http://10.0.60.36:5000/api/v1";
+  // return "https://sohag500.binarybards.online/api/v1";
 };

@@ -27,6 +27,7 @@ const AddBrandModal = ({
   useEffect(() => {
     if (initialBrand) {
       form.setFieldsValue({
+        name: initialBrand.name || "",
         brandUrl: initialBrand.brandUrl || "",
       });
 
@@ -81,12 +82,12 @@ const AddBrandModal = ({
 
       // Prepare data for parent component
       const brandData = {
+        name: values.name,
         brandUrl: values.brandUrl,
         imageFile: imageFile, // Send the file object to parent
         existingImage: initialBrand?.image || null, // Send existing image if available
       };
 
-      // console.log("Form data on save:", brandData);
       handleSave(brandData);
     } catch (error) {
       console.error("Form submission error:", error);
@@ -160,6 +161,17 @@ const AddBrandModal = ({
                 </div>
               </Form.Item>
             )}
+
+            {/* Name field */}
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[
+                { required: true, message: "Please enter a brand Name" },
+              ]}
+            >
+              <Input placeholder="Enter your Name" disabled={isLoading} />
+            </Form.Item>
 
             {/* Brand URL field */}
             <Form.Item
