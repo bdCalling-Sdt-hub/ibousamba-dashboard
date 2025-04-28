@@ -44,6 +44,7 @@ function Brands() {
   const handleEditBrand = (brand) => {
     setCurrentBrand({
       _id: brand._id,
+      name: brand.name,
       brandUrl: brand.brandUrl,
       image: `${imageUrl}${brand.image || ""}`,
     });

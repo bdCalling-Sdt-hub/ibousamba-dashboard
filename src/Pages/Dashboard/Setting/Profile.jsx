@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Button, ConfigProvider, Form, Input, Upload, message } from "antd";
-import { FaFeather } from "react-icons/fa6";
 import { HiMiniPencil } from "react-icons/hi2";
-import { useUser } from "../../../provider/User";
 import { imageUrl } from "../../../redux/api/baseApi";
-import { useUpdateProfileMutation } from "../../../redux/apiSlices/profileSlice";
+import {
+  useProfileQuery,
+  useUpdateProfileMutation,
+} from "../../../redux/apiSlices/profileSlice";
 import { MdPhotoCamera } from "react-icons/md";
 
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(null);
-  const { user } = useUser();
+  const { data: user } = useProfileQuery();
+  console.log("dd", user?.data);
 
   return (
     <ConfigProvider
@@ -32,7 +34,7 @@ function Profile() {
             src={
               uploadedImage
                 ? URL.createObjectURL(uploadedImage)
-                : `${imageUrl}${user?.image}`
+                : `${imageUrl}${user?.data?.image}`
             }
             className="w-24 h-24 border border-slate-500 rounded-full object-cover"
           />
@@ -52,7 +54,7 @@ function Profile() {
               <button>
                 <MdPhotoCamera
                   size={30}
-                  className="text-samba absolute top-16 left-28 rounded-full bg-black p-1"
+                  className="text-samba absolute top-[4.5rem] left-[4.5rem] rounded-full bg-black p-1"
                 />
               </button>
             </Upload>
@@ -97,17 +99,17 @@ const ProfileDetails = ({
   setUploadedImage,
 }) => {
   const [form] = Form.useForm();
-  const { updateUser } = useUser(); // Assuming you have an updateUser function in your user provider
+
   const [updateProfile, { isLoading, isError }] = useUpdateProfileMutation();
 
   // Reset form when user data changes or editing mode changes
   useEffect(() => {
     if (user) {
       form.setFieldsValue({
-        name: user.firstName,
-        email: user.email,
-        phone: user.mobileNumber,
-        role: user.role,
+        name: user?.data?.fullName,
+        email: user?.data?.email,
+        phone: user?.data?.phone,
+        role: user?.data?.role,
       });
     }
   }, [user, form]);
@@ -140,17 +142,11 @@ const ProfileDetails = ({
       if (response.success) {
         message.success("Profile updated successfully");
         setIsEditing(false);
-
-        // Update local user data if you have a function for that
-        if (updateUser && response.data) {
-          updateUser(response.data);
-        }
+      } else {
+        message.error("Failed to updated");
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      message.error(
-        "Failed to update profile: " + (error.message || "Unknown error")
-      );
     }
   };
 

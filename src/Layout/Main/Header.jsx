@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Badge, Avatar, Popover, message } from "antd";
-import { useUser } from "../../provider/User";
 import { CgMenu } from "react-icons/cg";
 import NotificationPopover from "../../Pages/Dashboard/Notification/NotificationPopover";
 import { imageUrl } from "../../redux/api/baseApi";
 import { io } from "socket.io-client";
 import getPageName from "../../components/common/GetPageName";
+import { useProfileQuery } from "../../redux/apiSlices/profileSlice";
 
 const Header = ({ toggleSidebar }) => {
   const [open, setOpen] = useState(false);
@@ -15,12 +15,12 @@ const Header = ({ toggleSidebar }) => {
   const [notifications, setNotifications] = useState([]);
   const [socketConnected, setSocketConnected] = useState(false);
   const socketRef = useRef(null);
-  const { user } = useUser();
+  const { data: user } = useProfileQuery();
 
-  const src = `${imageUrl}${user?.image || ""}`;
+  const src = `${imageUrl}${user?.data?.image || ""}`;
 
   useEffect(() => {
-    if (!user?.email) return;
+    if (!user?.data?.email) return;
 
     const connectSocket = async () => {
       try {
@@ -43,8 +43,8 @@ const Header = ({ toggleSidebar }) => {
         }
 
         // Create new socket connection
-        // socketRef.current = io("https://sohag500.binarybards.online", {
-        socketRef.current = io("http://10.0.60.36:5003", {
+        socketRef.current = io("https://sohag500.binarybards.online", {
+          // socketRef.current = io("http://10.0.60.36:5003", {
           auth: {
             token: token,
           },
@@ -193,7 +193,7 @@ const Header = ({ toggleSidebar }) => {
           <div className="border rounded-full">
             <Avatar size={40} src={src} />
           </div>
-          <p>{user?.firstName}</p>
+          <p>{user?.data?.fullName}</p>
         </Link>
       </div>
     </div>
