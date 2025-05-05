@@ -202,7 +202,7 @@ function AddProductModal({
 
       // Append form fields to FormData
       formData.append("name", values.productName);
-      formData.append("brand", values.brand);
+      formData.append("brandId", values.brandId);
       formData.append("categoryId", values.productCategory);
       formData.append("subCategoryId", values.productSubCategory);
       formData.append("price", values.productPrice);
@@ -377,7 +377,7 @@ function AddProductModal({
 
               <Form.Item
                 label="Brand"
-                name="brand"
+                name="brandId"
                 rules={[{ required: true, message: "Brand is required!" }]}
               >
                 <Select

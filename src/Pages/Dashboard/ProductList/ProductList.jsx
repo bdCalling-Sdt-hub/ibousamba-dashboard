@@ -254,7 +254,7 @@ const columns = (showEditModal, showDeleteModal) => [
     render: (_, record) => {
       return (
         <div className="flex items-center gap-2">
-          <span>{record?.brand?.name}</span>
+          <span>{record?.brandId?.name}</span>
         </div>
       );
     },
