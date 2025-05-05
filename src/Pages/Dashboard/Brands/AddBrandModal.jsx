@@ -9,8 +9,11 @@ import {
   Image,
   message,
   Spin,
+  Select,
+  Tooltip,
 } from "antd";
 import { LiaCloudUploadAltSolid } from "react-icons/lia";
+import { useCategoryQuery } from "../../../redux/apiSlices/categorySlice";
 
 const AddBrandModal = ({
   isModalOpen,
@@ -22,6 +25,8 @@ const AddBrandModal = ({
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
+  const { data: getCategory, isError } = useCategoryQuery();
+  console.log(getCategory?.data?.result);
 
   // Populate form when editing
   useEffect(() => {
@@ -29,6 +34,7 @@ const AddBrandModal = ({
       form.setFieldsValue({
         name: initialBrand.name || "",
         brandUrl: initialBrand.brandUrl || "",
+        category: initialBrand.category || [],
       });
 
       // Set preview image if available
@@ -80,10 +86,17 @@ const AddBrandModal = ({
         return;
       }
 
+      // Validate category
+      if (!values.category || values.category.length === 0) {
+        message.error("Please select at least one category");
+        return;
+      }
+
       // Prepare data for parent component
       const brandData = {
         name: values.name,
         brandUrl: values.brandUrl,
+        category: values.category,
         imageFile: imageFile, // Send the file object to parent
         existingImage: initialBrand?.image || null, // Send existing image if available
       };
@@ -93,6 +106,14 @@ const AddBrandModal = ({
       console.error("Form submission error:", error);
       message.error("Failed to save brand information");
     }
+  };
+
+  const options = getCategory?.data?.result?.map((cat) => ({
+    value: cat?._id,
+    label: cat?.name,
+  }));
+  const handleChangeCategory = (value) => {
+    console.log(`selected ${value}`);
   };
 
   return (
@@ -107,6 +128,21 @@ const AddBrandModal = ({
             defaultHoverColor: "white",
             defaultActiveBg: "#d99e1e",
             defaultActiveColor: "white",
+          },
+          // Select: {
+          //   multipleItemBg: "#d99e1e",
+          //   multipleItemBorderColor: "transparent",
+          //   multipleItemColor: "white",
+          //   optionSelectedBg: "#f4e1b9",
+          //   optionSelectedColor: "black",
+          //   colorBgContainer: "#f4e1b9",
+          //   colorBorder: "#d9d9d9",
+          //   colorPrimaryHover: "#d99e1e",
+          // },
+
+          Select: {
+            multipleItemBg: "black",
+            multipleItemBorderColor: "gray",
           },
         },
       }}
@@ -166,9 +202,7 @@ const AddBrandModal = ({
             <Form.Item
               label="Name"
               name="name"
-              rules={[
-                { required: true, message: "Please enter a brand Name" },
-              ]}
+              rules={[{ required: true, message: "Please enter a brand Name" }]}
             >
               <Input placeholder="Enter your Name" disabled={isLoading} />
             </Form.Item>
@@ -188,6 +222,114 @@ const AddBrandModal = ({
               <Input placeholder="https://example.com" disabled={isLoading} />
             </Form.Item>
 
+            <Form.Item
+              label="Add Category"
+              name="category"
+              rules={[
+                { required: true, message: "Please select a Category" },
+                // Remove the second rule since it's redundant and not specifying a type
+              ]}
+            >
+              {/* <Select
+                mode="multiple"
+                allowClear
+                placeholder="Please select"
+                defaultValue={[]}
+                onChange={handleChangeCategory}
+                options={options}
+                className="overflow-auto"
+                // Add these style props
+                tagRender={(props) => (
+                  <span
+                    style={{
+                      backgroundColor: "#d99e1e",
+                      color: "white",
+                      padding: "2px 8px",
+                      borderRadius: 4,
+                      marginRight: 4,
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {props.label}
+                    <span
+                      style={{ marginLeft: 4, cursor: "pointer" }}
+                      onClick={props.onClose}
+                    >
+                      ×
+                    </span>
+                  </span>
+                )}
+                style={{
+                  width: "100%",
+                }}
+                dropdownStyle={{
+                  backgroundColor: "#f4e1b9",
+                }}
+                tokenSeparators={[","]}
+                maxTagCount="responsive"
+              /> */}
+              <Select
+                mode="multiple"
+                allowClear
+                placeholder="Please select"
+                defaultValue={[]}
+                onChange={handleChangeCategory}
+                options={options}
+                className="bg-white rounded-md"
+                tagRender={(props) => (
+                  <span className="bg-[#d99e1e] text-white text-[14px] px-2 py-.5 rounded-full inline-flex items-center leading-5">
+                    {props.label}
+                    <span
+                      className="ml-1.5 cursor-pointer text-xs"
+                      onClick={props.onClose}
+                    >
+                      ×
+                    </span>
+                  </span>
+                )}
+                maxTagCount="responsive"
+                maxTagPlaceholder={(omittedValues) => {
+                  return (
+                    <Tooltip
+                      title={
+                        <div className="space-y-1 ">
+                          {omittedValues.map((value) => {
+                            const option = options.find(
+                              (opt) => opt.value === value.key
+                            );
+                            return (
+                              <div
+                                key={value.key}
+                                className="bg-samba w-fit rounded-full px-2 py-.5 text-[14px] text-white leading-5"
+                              >
+                                {option?.label || value.key}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      }
+                      overlayClassName="max-w-xs"
+                      overlayInnerStyle={{
+                        backgroundColor: "#f4e1b9",
+                        color: "#000",
+                        borderRadius: "0.5rem",
+                        padding: "0.75rem",
+                      }}
+                      color="#f4e1b9"
+                    >
+                      <span className="text-white cursor-pointer ml-1">
+                        +{omittedValues.length} more...
+                      </span>
+                    </Tooltip>
+                  );
+                }}
+                dropdownStyle={{
+                  backgroundColor: "#f4e1b9",
+                }}
+                popupClassName="[&_.ant-select-item-option-selected]:bg-[#f4e1b9] [&_.ant-select-item-option-selected]:text-black"
+              />
+            </Form.Item>
             <Form.Item>
               <Button block htmlType="submit" disabled={isLoading}>
                 {initialBrand ? "Update" : "Save"}
