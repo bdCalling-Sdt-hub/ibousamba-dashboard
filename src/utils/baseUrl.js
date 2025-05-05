@@ -10,5 +10,5 @@
 
 export const getBaseUrl = () => {
   // return "http://10.0.60.36:5000/api/v1";
-  return "https://sohag500.binarybards.online/api/v1";
+  return "https://api.atlanticmachineryequip.com/api/v1";
 };
