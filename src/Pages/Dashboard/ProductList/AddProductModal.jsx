@@ -47,16 +47,16 @@ function AddProductModal({
   useEffect(() => {
     if (editingProduct) {
       form.setFieldsValue({
-        productName: editingProduct.name,
-        brand: editingProduct.brand,
-        productCategory: editingProduct.categoryId,
-        productSubCategory: editingProduct.subCategoryId,
-        productPrice: editingProduct.price,
-        productCapacity: editingProduct.capacity,
-        productModel: editingProduct.model,
-        productType: editingProduct.type,
-        productPower: editingProduct.power,
-        productDescription: editingProduct.description,
+        productName: editingProduct?.name,
+        brandId: editingProduct.brandId?._id,
+        productCategory: editingProduct?.categoryId,
+        productSubCategory: editingProduct?.subCategoryId,
+        productPrice: editingProduct?.price,
+        productCapacity: editingProduct?.capacity,
+        productModel: editingProduct?.model,
+        productType: editingProduct?.type,
+        productPower: editingProduct?.power,
+        productDescription: editingProduct?.description,
         latitude: editingProduct.location?.coordinates?.[1],
         longitude: editingProduct.location?.coordinates?.[0],
       });
@@ -82,8 +82,8 @@ function AddProductModal({
       if (editingProduct.subCategoryId) {
         setSelectedSubCategory(editingProduct.subCategoryId);
       }
-      if (editingProduct.brand) {
-        setSelectedBrand(editingProduct.brand);
+      if (editingProduct.brandId && editingProduct.brandId._id) {
+        setSelectedBrand(editingProduct.brandId._id);
       }
     } else {
       form.resetFields();
