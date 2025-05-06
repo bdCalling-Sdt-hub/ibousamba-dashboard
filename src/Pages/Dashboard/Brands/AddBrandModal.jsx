@@ -32,7 +32,6 @@ const AddBrandModal = ({
       form.setFieldsValue({
         name: initialBrand.name || "",
         brandUrl: initialBrand.brandUrl || "",
-        category: initialBrand.category || [],
       });
 
       // Set preview image if available
@@ -84,17 +83,10 @@ const AddBrandModal = ({
         return;
       }
 
-      // Validate category
-      if (!values.category || values.category.length === 0) {
-        message.error("Please select at least one category");
-        return;
-      }
-
       // Prepare data for parent component
       const brandData = {
         name: values.name,
         brandUrl: values.brandUrl,
-        category: values.category,
         imageFile: imageFile, // Send the file object to parent
         existingImage: initialBrand?.image || null, // Send existing image if available
       };
