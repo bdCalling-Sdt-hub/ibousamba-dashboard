@@ -11,7 +11,6 @@ import {
   Spin,
 } from "antd";
 import { LiaCloudUploadAltSolid } from "react-icons/lia";
-import { useCategoryQuery } from "../../../redux/apiSlices/categorySlice";
 
 const AddBrandModal = ({
   isModalOpen,
@@ -23,8 +22,6 @@ const AddBrandModal = ({
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
-  const { data: getCategory, isError } = useCategoryQuery();
-  console.log(getCategory?.data?.result);
 
   // Populate form when editing
   useEffect(() => {
