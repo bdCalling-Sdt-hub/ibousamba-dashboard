@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, ConfigProvider, Pagination } from "antd";
+import { Alert, Button, ConfigProvider, Pagination } from "antd";
 import { useNotificationQuery } from "../../../redux/apiSlices/notificationSlice";
 
 import { FaRegBell } from "react-icons/fa";
